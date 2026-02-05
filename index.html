@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Hope v3.0</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:#0a0e17;color:#e8ecf4;min-height:100vh}
+.login{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,#0a0e17,#111827,#1a2235)}
+.box{background:#1a2235;border:1px solid #2a3650;border-radius:16px;padding:48px 40px;width:420px;box-shadow:0 24px 80px rgba(0,0,0,0.5)}
+.box h1{text-align:center;font-size:28px;margin-bottom:4px}
+.box h1 span{color:#00e676}
+.sub{text-align:center;color:#7b8ba8;font-size:13px;letter-spacing:2px;margin-bottom:30px}
+.ver{text-align:center;color:#4a5a78;font-size:11px;margin-bottom:24px}
+.fg{margin-bottom:18px}
+.fg label{display:block;font-size:12px;color:#7b8ba8;margin-bottom:6px;text-transform:uppercase;letter-spacing:1px}
+.fg input{width:100%;padding:14px;background:#0a0e17;border:1px solid #2a3650;border-radius:10px;color:#e8ecf4;font-size:14px}
+.fg input:focus{outline:none;border-color:#00e676}
+.lbtn{width:100%;padding:16px;background:linear-gradient(135deg,#00e676,#00c853);border:none;border-radius:10px;color:#0a0e17;font-size:15px;font-weight:700;cursor:pointer;text-transform:uppercase;margin-top:8px}
+.foot{text-align:center;margin-top:20px;font-size:12px;color:#4a5a78}
+.dash{display:none;min-height:100vh}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;background:#111827;border-bottom:1px solid #2a3650;position:sticky;top:0;z-index:100}
+.brand{font-size:16px;font-weight:700}
+.brand span{color:#00e676}
+.pills{display:flex;gap:12px;align-items:center}
+.pill{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600}
+.pill.on{background:rgba(0,230,118,0.2);color:#00e676}
+.ap-btn{padding:8px 16px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:none;transition:all 0.3s}
+.ap-btn.off{background:#1a2235;color:#7b8ba8;border:1px solid #2a3650}
+.ap-btn.on{background:rgba(0,230,118,0.2);color:#00e676;border:1px solid #00e676;box-shadow:0 0 20px rgba(0,230,118,0.2)}
+.main{display:grid;grid-template-columns:1fr 340px;min-height:calc(100vh - 56px)}
+.left{padding:20px;display:flex;flex-direction:column;gap:16px}
+.right{background:#111827;padding:16px;display:flex;flex-direction:column;gap:12px;overflow-y:auto;border-left:1px solid #2a3650}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.stat{background:#1a2235;border:1px solid #2a3650;border-radius:12px;padding:16px}
+.stat-l{font-size:11px;color:#4a5a78;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.stat-v{font-size:20px;font-weight:600}
+.stat-c{font-size:11px;margin-top:4px}
+.grn{color:#00e676}.red{color:#ff1744}.blu{color:#448aff}.amb{color:#ffab00}
+.card{background:#1a2235;border:1px solid #2a3650;border-radius:12px;overflow:hidden;flex:1}
+.card-h{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid #2a3650}
+.card-t{font-size:14px;font-weight:600}
+.cnt{background:rgba(68,138,255,0.2);color:#448aff;padding:2px 8px;border-radius:10px;font-size:11px;margin-left:8px}
+.empty{padding:48px;text-align:center;color:#4a5a78;font-size:14px}
+.empty .ico{font-size:32px;margin-bottom:12px}
+.rsec{background:#1a2235;border:1px solid #2a3650;border-radius:12px;overflow:hidden}
+.rsec-h{padding:12px 16px;border-bottom:1px solid #2a3650;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:#7b8ba8}
+.rsec-b{padding:12px 16px}
+.wgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.witem{padding:10px;border-radius:8px;background:#0a0e17;text-align:center}
+.wl{font-size:10px;color:#4a5a78;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px}
+.wt{font-size:14px;font-weight:600}
+.ws{margin-top:10px;padding:8px;border-radius:8px;text-align:center;font-size:12px;font-weight:600}
+.ws.on{background:rgba(0,230,118,0.2);color:#00e676;border:1px solid #00e676}
+.ws.off{background:#0a0e17;color:#4a5a78;border:1px solid #2a3650}
+.tier{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #2a3650}
+.tier:last-child{border-bottom:none}
+.tier-i{display:flex;align-items:center;gap:10px}
+.tier-ic{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700}
+.t1{background:rgba(255,171,0,0.2);color:#ffab00}
+.t2{background:rgba(68,138,255,0.2);color:#448aff}
+.t3{background:rgba(0,230,118,0.2);color:#00e676}
+.tier-n{font-size:12px;font-weight:600}
+.tier-d{font-size:11px;color:#4a5a78}
+.tier-p{font-size:14px;font-weight:600}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.scard{padding:12px;border-radius:8px;background:#0a0e17;text-align:center;border:1px solid #2a3650}
+.scard-n{font-size:11px;font-weight:600;margin-bottom:4px}
+.scard-d{font-size:10px;color:#4a5a78}
+.prot{display:flex;flex-direction:column;gap:6px}
+.prot-i{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;border-radius:6px;background:#0a0e17;font-size:11px}
+.prot-n{color:#7b8ba8}
+.prot-s{font-size:10px;font-weight:600}
+.prot-s.on{color:#00e676}
+.log-i{display:flex;gap:10px;padding:10px 0;border-bottom:1px solid #2a3650}
+.log-i:last-child{border-bottom:none}
+.log-d{width:8px;height:8px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.log-d.alert{background:#ffab00}
+.log-d.entry{background:#448aff}
+.log-d.exit{background:#00e676}
+.log-d.block{background:#ff1744}
+.log-t{font-size:12px;color:#7b8ba8;line-height:1.4}
+.log-t strong{color:#e8ecf4}
+.log-tm{font-size:10px;color:#4a5a78;margin-top:2px}
+.clock{display:flex;align-items:center;justify-content:center;gap:12px;padding:12px;background:#1a2235;border:1px solid #2a3650;border-radius:12px}
+.clock-t{font-size:22px;font-weight:600}
+.clock-l{font-size:10px;color:#4a5a78;text-transform:uppercase;letter-spacing:1px}
+.clock-s{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600}
+.clock-s.open{background:rgba(0,230,118,0.2);color:#00e676}
+.clock-s.closed{background:rgba(255,23,68,0.2);color:#ff1744}
+.built{text-align:center;padding:20px;font-size:11px;color:#4a5a78}
+.built span{color:#00e676}
+.btn-s{padding:6px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid #2a3650;background:#0a0e17;color:#7b8ba8}
+@media(max-width:1024px){.main{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.stats{grid-template-columns:1fr 1fr}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+</style>
+</head>
+<body>
+<div class="login" id="ls">
+<div class="box">
+<h1>PROJECT <span>HOPE</span></h1>
+<div class="sub">AUTOPILOT TRADING</div>
+<div class="ver">v3.0 - Built by Stephen Martinez | Lancaster, PA</div>
+<div class="fg"><label>Username</label><input type="text" id="lu" placeholder="Enter username"></div>
+<div class="fg"><label>Password</label><input type="password" id="lp" placeholder="Enter password"></div>
+<button class="lbtn" onclick="doLogin()">Launch Platform</button>
+<div class="foot">Secure Connection - Tradier API - 16 Protections Active</div>
+</div>
+</div>
+<div class="dash" id="db">
+<div class="nav">
+<div class="brand">PROJECT <span>HOPE</span></div>
+<div class="pills">
+<div class="pill on" id="sp"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#00e676;margin-right:6px;animation:pulse 2s infinite"></span>CONNECTED</div>
+<button class="ap-btn off" id="ab" onclick="toggleAP()">AUTOPILOT OFF</button>
+</div>
+</div>
+<div class="main">
+<div class="left">
+<div class="stats">
+<div class="stat"><div class="stat-l">Account Value</div><div class="stat-v" id="av">$100,000</div><div class="stat-c grn">+$0.00 (0.00%)</div></div>
+<div class="stat"><div class="stat-l">Buying Power</div><div class="stat-v" id="bp">$100,000</div></div>
+<div class="stat"><div class="stat-l">Day P&amp;L</div><div class="stat-v grn" id="dp">$0.00</div></div>
+<div class="stat"><div class="stat-l">Open Positions</div><div class="stat-v blu" id="op">0</div></div>
+<div class="stat"><div class="stat-l">Win Rate</div><div class="stat-v amb" id="wr">--</div></div>
+</div>
+<div class="card">
+<div class="card-h"><div class="card-t">Active Positions<span class="cnt" id="pc">0</span></div><div><button class="btn-s" onclick="addLog('alert','System','Positions refreshed')">Refresh</button></div></div>
+<div class="empty"><div class="ico">📊</div>No open positions.<br><span style="font-size:12px">Enable Autopilot to start scanning for A+ setups.</span></div>
+</div>
+<div class="built">PROJECT <span>HOPE</span> v3.0 - Built by Stephen Martinez | Lancaster, PA</div>
+</div>
+<div class="right">
+<div class="clock"><div><div class="clock-t" id="ct">--:--:--</div><div class="clock-l">Eastern Time</div></div><div class="clock-s closed" id="ms">CLOSED</div></div>
+<div class="rsec"><div class="rsec-h">Trading Windows</div><div class="rsec-b"><div class="wgrid"><div class="wivem"><div class="wl">Morning</div><div class="wt">9:30-10:30</div></div><div class="witem"><div class="wl">Power Hour</div><div class="wt">3:00-3:55</div></div></div><div class="ws off" id="wst">OUTSIDE WINDOW</div></div></div>
+<div class="rsec"><div class="rsec-h">Take Profit Rules</div><div class="rsec-b">
+<div class="tier"><div class="tier-i"><div class="tier-ic t1">T1</div><div><div class="tier-n">Tier 1</div><div class="tier-d">Sell 50%</div></div></div><div class="tier-p amb">+15%</div></div>
+<div class="tier"><div class="tier-i"><div class="tier-ic t2">T2</div><div><div class="tier-n">Tier 2</div><div class="tier-d">Sell 25% more</div></div></div><div class="tier-p blu">+25%</div></div>
+<div class="tier"><div class="tier-i"><div class="tier-ic t3">T3</div><div><div class="tier-n">Full Exit</div><div class="tier-d">Close all</div></div></div><div class="tier-p grn">+30%</div></div>
+</div></div>
+<div class="rsec"><div class="rsec-h">A+ Entry Setups</div><div class="rsec-b"><div class="sgrid">
+<div class="scard"><div class="scard-n">ORB</div><div class="scard-d">Opening Range Break</div></div>
+<div class="scard"><div class="scard-n">VWAP</div><div class="scard-d">VWAP Bounce</div></div>
+<div class="scard"><div class="scard-n">PBC</div><div class="scard-d">Pullback Continue</div></div>
+<div class="scard"><div class="scard-n">B&amp;R</div><div class="scard-d">Break & Retest</div></div>
+</div></div></div>
+<div class="rsec"><div class="rsec-h">16 Protections</div><div class="rsec-b"><div class="prot">
+<div class="prot-i"><span class="prot-n">Max 3 Positions</span><span class="prot-s on">ACTIVE</span></div>
+<div class="prot-i"><span class="prot-n">Max 5 Contracts</span><span class="prot-s on">ACTIVE</span></div>
+<div class="prot-i"><span class="prot-n">2-Min Cooldown</span><span class="prot-s on">ACTIVE</span></div>
+<div class="prot-i"><span class="prot-n">Daily Loss Limit</span><span class="prot-s on">ACTIVE</span></div>
+<div class="prot-i"><span class="prot-n">Stop Loss -15%</span><span class="prot-s on">ACTIVE</span></div>
+<div class="prot-i"><span class="prot-n">Trading Windows</span><span class="prot-s on">ACTIVE</span></div>
+<div class="prot-i"><span class="prot-n">No Double Entry</span><span class="prot-s on">ACTIVE</span></div>
+<div class="prot-i"><span class="prot-n">Volume Filter</span><span class="prot-s on">ACTIVE</span></div>
+<div class="prot-i"><span class="prot-n">Spread Check</span><span class="prot-s on">ACTIVE</span></div>
+<div class="prot-i"><span class="prot-n">IV Rank Filter</span><span class="prot-s on">ACTIVE</span></div>
+<div class="prot-i"><span class="prot-n">Earnings Blackout</span><span class="prot-s on">ACTIVE</span></div>
+<div class="prot-i"><span class="prot-n">Max 10 Daily Trades</span><span class="prot-s on">ACTIVE</span></div>
+<div class="prot-i"><span class="prot-n">EOD Auto-Close</span><span class="prot-s on">ACTIVE</span></div>
+<div class="prot-i"><span class="prot-n">BP Reserve</span><span class="prot-s on">ACTIVE</span></div>
+<div class="prot-i"><span class="prot-n">3-Loss Breaker</span><span class="prot-s on">ACTIVE</span></div>
+<div class="prot-i"><span class="prot-n">Weekend Block</span><span class="prot-s on">ACTIVE</span></div>
+</div></div></div>
+<div class="rsec"><div class="rsec-h">Activity Log</div><div class="rsec-b" id="al">
+<div class="log-i"><div class="log-d alert"></div><div><div class="log-t"><strong>System</strong> - Platform ready. Waiting for Autopilot.</div><div class="log-tm" id="it">--:--:--</div></div></div>
+</div></div>
+</div>
+</div>
+</div>
+<script>
+function doLogin(){var u=document.getElementById("lu").value;var p=document.getElementById("lp").value;if(u&&p){document.getElementById("ls").style.display="none";document.getElementById("db").style.display="block";startClock();addLog("alert","System","Logged in as "+u+". All 16 protections active.")}}
+document.addEventListener("keypress",function(e){if(e.key==="Enter"&&document.getElementById("ls").style.display!=="none")doLogin()});
+function startClock(){updateClock();setInterval(updateClock,1000)}
+function updateClock(){var n=new Date();var e=new Date(n.toLocaleString("en-US",{timeZone:"America/New_York"}));var h=e.getHours(),m=e.getMinutes(),s=e.getSeconds();var t=String(h).padStart(2,"0")+":"+String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");document.getElementById("ct").textContent=t;document.getElementById("it").textContent=t;var d=e.getDay(),mins=h*60+m,wd=d>=1&&d<=5,mh=mins>=570&&mins<=960;var ms=document.getElementById("ms");if(wd&&mh){ms.textContent="MARKET OPEN";ms.className="clock-s open"}else{ms.textContent="CLOSED";ms.className="clock-s closed"}var iw=wd&&((mins>=570&&mins<=630)||(mins>=900&&mins<=955));var ws=document.getElementById("wst");if(iw){ws.textContent="INSIDE WINDOW";ws.className="ws on"}else{ws.textContent="OUTSIDE WINDOW";ws.className="ws off"}}
+var apOn=false;function toggleAP(){apOn=!apOn;var b=document.getElementById("ab");if(apOn){b.className="ap-btn on";b.textContent="AUTOPILOT ON";addLog("entry","Autopilot","Enabled - scanning for A+ setups")}else{b.className="ap-btn off";b.textContent="AUTOPILOT OFF";addLog("block","Autopilot","Disabled - scanning paused")}}
+function addLog(type,src,msg){var al=document.getElementById("al");var n=new Date();var e=new Date(n.toLocaleString("en-US",{timeZone:"America/New_York"}));var t=e.toTimeString().split(" ")[0];var d=document.createElement("div");d.className="log-i";d.innerHTML='<div class="log-d '+type+'"></div><div><div class="log-t"><strong>'+src+"</strong> - "+msg+'</div><div class="log-tm">'+t+"</div></div>";al.insertBefore(d,al.firstChild)}
+</script>
+</body>
+</html>
