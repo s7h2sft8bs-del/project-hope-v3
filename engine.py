@@ -1,4 +1,4 @@
-"""PROJECT HOPE v3.0 - Trading Engine - The Brain"""
+"""PROJECT HOPE v3.0 - Trading Engine with Persistent Storage"""
 import threading, time
 from datetime import datetime, date
 from tradier_api import TradierAPI
@@ -11,12 +11,14 @@ from analytics import Analytics
 from greeks import GreeksDashboard
 from screener import OptionsScreener
 from backtester import Backtester
+from storage import Storage, AutoSaver
 import config
 
 class TradingEngine:
     def __init__(self):
         self.api = TradierAPI()
         self.alerts = Alerts()
+        self.storage = Storage()
         self.state = {
             'autopilot':False,'connected':False,'balance':{},'vix':20,
             'daily_pnl':0,'last_trade_time':None,
@@ -30,15 +32,39 @@ class TradingEngine:
             'screener_results':{'spreads':[],'directional':[],'scan_time':None,'symbols_scanned':0},
             'backtest_results':None,'backtest_running':False,
         }
+
+        # === RESTORE SAVED STATE ===
+        saved = self.storage.load_state()
+        if saved:
+            self.state['credit_spreads'] = saved.get('credit_spreads', [])
+            self.state['directional_trades'] = saved.get('directional_trades', [])
+            self.state['wins'] = saved.get('wins', 0)
+            self.state['losses'] = saved.get('losses', 0)
+            self.state['consecutive_losses'] = saved.get('consecutive_losses', 0)
+            self.state['total_pnl'] = saved.get('total_pnl', 0)
+            self.state['daily_pnl'] = saved.get('daily_pnl', 0)
+            self.state['cs_trades_today'] = saved.get('cs_trades_today', 0)
+            self.state['dir_trades_today'] = saved.get('dir_trades_today', 0)
+            # Reset daily counters if it's a new day
+            if saved.get('today','') != str(date.today()):
+                self.state['cs_trades_today'] = 0
+                self.state['dir_trades_today'] = 0
+                self.state['daily_pnl'] = 0
+                self.state['consecutive_losses'] = 0
+            self._log('system', f"RESTORED: {self.state['wins']}W/{self.state['losses']}L | P&L: ${self.state['total_pnl']:.2f}")
+        else:
+            self._log('system', 'Fresh start - no saved state')
+
         self.spread_scanner = CreditSpreadScanner(self.api, self.state)
         self.directional_scanner = DirectionalScanner(self.api, self.state)
         self.position_manager = PositionManager(self.api, self.state, self.alerts)
         self.protections = Protections(self.api, self.state)
-        self.analytics = Analytics()
+        self.analytics = Analytics(self.storage)  # Pass storage for persistent trade history
         self.greeks_dash = GreeksDashboard(self.api)
         self.screener = OptionsScreener(self.api)
         self.backtester = Backtester(self.api)
-        self._log('system', f'Engine initialized. Scanning {len(config.WATCHLIST)} symbols.')
+        self.autosaver = AutoSaver(self.storage, self, interval=30)
+        self._log('system', f'Engine initialized. {len(config.WATCHLIST)} symbols. {len(self.analytics.trade_history)} historical trades loaded.')
 
     def start(self):
         self.state['engine_running'] = True
@@ -48,11 +74,15 @@ class TradingEngine:
             self._log('system', f"Connected. Balance: ${balance['total_value']:,.2f}")
         else:
             self._log('alert', 'Failed to connect to Tradier API')
+
+        # Start auto-saver (saves state every 30 seconds)
+        self.autosaver.start()
+
         for fn in [self._position_loop, self._spread_loop, self._directional_loop,
                    self._account_loop, self._clock_loop, self._reset_loop,
                    self._greeks_loop, self._screener_loop]:
             threading.Thread(target=fn, daemon=True).start()
-        self._log('system', 'All engine threads started')
+        self._log('system', 'All threads started + auto-save active')
 
     def _position_loop(self):
         while self.state['engine_running']:
@@ -80,6 +110,7 @@ class TradingEngine:
                                     self.state['last_trade_time'] = datetime.now()
                                     self._log('entry', f"SPREAD: {best['symbol']} ${best['credit']} credit")
                                     self.alerts.send(f"NEW SPREAD: {best['symbol']}\nCredit: ${best['credit']}")
+                                    self.storage.save_state(self.state)  # Save immediately after trade
             except Exception as e: print(f"[SPREAD ERR] {e}")
             time.sleep(config.SPREAD_SCAN_INTERVAL)
 
@@ -100,6 +131,7 @@ class TradingEngine:
                                     self.state['last_trade_time'] = datetime.now()
                                     self._log('entry', f"TRADE: {best['symbol']} {best['setup_type']} Score:{best['score']}")
                                     self.alerts.send(f"NEW: {best['symbol']} {best['setup_type']}")
+                                    self.storage.save_state(self.state)  # Save immediately
             except Exception as e: print(f"[DIR ERR] {e}")
             time.sleep(config.DIRECTIONAL_SCAN_INTERVAL)
 
@@ -155,10 +187,17 @@ class TradingEngine:
             try:
                 today = str(date.today())
                 if today != self.state['today']:
+                    # Save end-of-day summary before reset
+                    self.storage.update_daily_summary(
+                        self.state['today'],
+                        self.state['cs_trades_today'] + self.state['dir_trades_today'],
+                        self.state['wins'], self.state['losses'], self.state['daily_pnl']
+                    )
                     self.state.update({'today':today,'cs_trades_today':0,'dir_trades_today':0,
                                        'daily_pnl':0,'consecutive_losses':0})
                     self.state.pop('eod_closed_today', None)
                     self._log('system', f'New day: {today}')
+                    self.storage.save_state(self.state)
             except: pass
             time.sleep(60)
 
@@ -190,11 +229,13 @@ class TradingEngine:
                 if t['status']=='open' and not t.get('manual_override'):
                     self.position_manager._close_directional(t, t['current_qty'], "EOD AUTO-CLOSE")
             self.state['eod_closed_today'] = True
+            self.storage.save_state(self.state)  # Save after EOD close
 
     def toggle_autopilot(self):
         self.state['autopilot'] = not self.state['autopilot']
         s = "ON" if self.state['autopilot'] else "OFF"
         self._log('system', f'Autopilot {s}'); self.alerts.send(f"Autopilot {s}")
+        self.storage.save_state(self.state)
         return self.state['autopilot']
 
     def run_backtest(self, symbol='SPY', days=365):
@@ -203,6 +244,7 @@ class TradingEngine:
             r = self.backtester.run_credit_spread_backtest(symbol, days)
             self.state['backtest_results'] = r
             if 'error' not in r:
+                self.storage.save_backtest(r)  # Save to disk
                 self._log('system', f"Backtest: {r['win_rate']}% WR | ${r['total_pnl']} | Sharpe {r['sharpe_ratio']}")
         except Exception as e:
             self.state['backtest_results'] = {'error': str(e)}
@@ -238,6 +280,7 @@ class TradingEngine:
             'backtest_running':self.state.get('backtest_running',False),
             'analytics':self.analytics.get_full_report(),
             'watchlist_count':len(config.WATCHLIST),
+            'storage_stats':self.storage.get_storage_stats(),
         }
 
     def _log(self, lt, msg):

@@ -1,7 +1,7 @@
-"""PROJECT HOPE v3.0 - Web Server"""
+"""PROJECT HOPE v3.0 - Web Server with Persistent Storage"""
 from flask import Flask, send_file, jsonify, request
 from engine import TradingEngine
-import os, threading
+import threading, os
 
 app = Flask(__name__)
 engine = TradingEngine()
@@ -14,62 +14,74 @@ def home(): return send_file('index.html')
 def dashboard(): return jsonify(engine.get_dashboard_data())
 
 @app.route('/api/autopilot', methods=['POST'])
-def autopilot(): return jsonify({'autopilot': engine.toggle_autopilot()})
+def toggle_ap(): return jsonify({'autopilot': engine.toggle_autopilot()})
 
 @app.route('/api/close', methods=['POST'])
 def close_pos():
     d = request.json or {}
-    return jsonify({'success': engine.position_manager.manual_close_position(d.get('trade_id'), d.get('trade_type', 'directional'))})
+    r = engine.position_manager.manual_close_position(d.get('trade_id'), d.get('trade_type','directional'))
+    engine.storage.save_state(engine.state)
+    return jsonify({'success': r})
 
 @app.route('/api/override', methods=['POST'])
-def override():
+def toggle_ovr():
     d = request.json or {}
-    return jsonify({'manual_override': engine.position_manager.toggle_manual_override(d.get('trade_id'), d.get('trade_type', 'directional'))})
+    r = engine.position_manager.toggle_manual_override(d.get('trade_id'), d.get('trade_type','directional'))
+    return jsonify({'manual_override': r})
 
 @app.route('/api/close-all', methods=['POST'])
 def close_all():
     c = 0
     for s in engine.state['credit_spreads']:
-        if s['status'] == 'open': engine.position_manager.manual_close_position(s['order_id'], 'spread'); c += 1
+        if s['status'] == 'open': engine.position_manager.manual_close_position(s['order_id'],'spread'); c += 1
     for t in engine.state['directional_trades']:
-        if t['status'] == 'open': engine.position_manager.manual_close_position(t['order_id'], 'directional'); c += 1
+        if t['status'] == 'open': engine.position_manager.manual_close_position(t['order_id'],'directional'); c += 1
+    engine.storage.save_state(engine.state)
     return jsonify({'closed': c})
 
 @app.route('/api/reset-breaker', methods=['POST'])
-def reset():
+def reset_breaker():
     engine.state['consecutive_losses'] = 0
-    return jsonify({'success': True})
+    engine._log('system', 'Loss breaker reset'); return jsonify({'success': True})
 
 @app.route('/api/backtest', methods=['POST'])
 def run_backtest():
     d = request.json or {}
-    symbols = d.get('symbols', ['SPY','QQQ','AAPL','MSFT','AMZN','NVDA','AMD','TSLA','META','GOOGL','NFLX','BA','JPM','XOM','GS'])
-    days = d.get('days', 365)
-    def _run(): engine.backtest_results = engine.run_backtest(symbols, days)
-    threading.Thread(target=_run, daemon=True).start()
-    return jsonify({'status': 'running', 'symbols': len(symbols), 'days': days})
+    symbol = d.get('symbol', 'SPY')
+    days = min(d.get('days', 365), 730)
+    if engine.state.get('backtest_running'): return jsonify({'error': 'Backtest already running'})
+    threading.Thread(target=engine.run_backtest, args=(symbol, days), daemon=True).start()
+    return jsonify({'status': 'started', 'symbol': symbol, 'days': days})
 
 @app.route('/api/backtest/results')
 def backtest_results():
-    if engine.backtest_results: return jsonify(engine.backtest_results)
-    return jsonify({'status': 'no results yet'})
-
-@app.route('/api/greeks')
-def greeks(): return jsonify(engine.greeks.get_data())
-
-@app.route('/api/analytics')
-def analytics(): return jsonify(engine.analytics.get_full_analytics())
+    return jsonify({'results': engine.state.get('backtest_results'), 'running': engine.state.get('backtest_running', False)})
 
 @app.route('/api/screener')
-def screener(): return jsonify(engine.screener.get_scan_data())
+def screener_data(): return jsonify(engine.state.get('screener_results', {}))
 
-@app.route('/api/screener/scan', methods=['POST'])
-def run_scan(): return jsonify(engine.screener.full_scan())
+@app.route('/api/analytics')
+def analytics_data(): return jsonify(engine.analytics.get_full_report())
 
-@app.route('/api/probability', methods=['POST'])
-def probability():
-    d = request.json or {}
-    return jsonify({'probability_otm': engine.screener.probability_calculator(d.get('price',0), d.get('strike',0), d.get('dte',30), d.get('iv',30))})
+@app.route('/api/greeks')
+def greeks_data(): return jsonify(engine.state.get('portfolio_greeks', {}))
+
+@app.route('/api/storage')
+def storage_stats(): return jsonify(engine.storage.get_storage_stats())
+
+@app.route('/api/storage/save', methods=['POST'])
+def force_save():
+    engine.storage.save_state(engine.state)
+    engine.storage.save_analytics(engine.analytics.get_full_report())
+    return jsonify({'saved': True, 'stats': engine.storage.get_storage_stats()})
+
+@app.route('/api/trade-history')
+def trade_history():
+    h = engine.storage.load_trade_history()
+    return jsonify({'total': len(h), 'trades': h[-100:]})
+
+@app.route('/api/daily-logs')
+def daily_logs(): return jsonify(engine.storage.load_daily_logs())
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
