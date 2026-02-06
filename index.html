@@ -5,80 +5,142 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#060a13">
 <title>Project Hope v3.0</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{--g:#00e676;--r:#ff1744;--b:#448aff;--a:#ffab00;--p:#ab47bc;--c:#26c6da;--bg0:#060a13;--bg1:#0a0e17;--bg2:#111827;--bg3:#1a2235;--brd:#1e2d45;--txt1:#e0e6f0;--txt2:#7b8ba8;--txt3:#4a5a78}
-body{font-family:'SF Pro Display',-apple-system,system-ui,sans-serif;background:var(--bg0);color:var(--txt1);min-height:100vh;overflow-x:hidden}
+body{font-family:-apple-system,system-ui,BlinkMacSystemFont,sans-serif;background:var(--bg0);color:var(--txt1);min-height:100vh;overflow-x:hidden}
 body.light{--bg0:#f5f7fa;--bg1:#ffffff;--bg2:#f0f2f5;--bg3:#e8ecf1;--brd:#d1d9e6;--txt1:#1a202c;--txt2:#4a5568;--txt3:#718096}
-.login{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,var(--bg0),var(--bg2));padding:20px}
-.lbox{background:var(--bg3);border:1px solid var(--brd);border-radius:20px;padding:40px 32px;width:100%;max-width:420px;box-shadow:0 32px 100px rgba(0,0,0,0.4)}
+
+/* LOGIN */
+.login{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.lbox{background:var(--bg3);border:1px solid var(--brd);border-radius:20px;padding:40px 32px;width:100%;max-width:420px}
 .lbox h1{text-align:center;font-size:26px;font-weight:800;letter-spacing:2px;margin-bottom:4px}.lbox h1 span{color:var(--g)}
-.lsub{text-align:center;color:var(--txt2);font-size:12px;letter-spacing:3px;margin-bottom:4px}
-.lver{text-align:center;color:var(--txt3);font-size:10px;margin-bottom:28px}
+.lsub{text-align:center;color:var(--txt2);font-size:12px;letter-spacing:3px;margin-bottom:24px}
 .fg{margin-bottom:16px}.fg label{display:block;font-size:11px;color:var(--txt2);margin-bottom:6px;text-transform:uppercase;letter-spacing:1.5px;font-weight:600}
-.fg input,.fg select,.fg textarea{width:100%;padding:14px 16px;background:var(--bg1);border:1px solid var(--brd);border-radius:12px;color:var(--txt1);font-size:16px;-webkit-appearance:none;font-family:inherit}
-.fg input:focus,.fg select:focus,.fg textarea:focus{outline:none;border-color:var(--g);box-shadow:0 0 20px rgba(0,230,118,0.1)}
-.lbtn{width:100%;padding:16px;background:linear-gradient(135deg,#00e676,#00c853);border:none;border-radius:12px;color:#060a13;font-size:15px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:1px;margin-top:8px}.lbtn:active{transform:scale(0.98)}
-.lfoot{text-align:center;margin-top:16px;font-size:10px;color:var(--txt3);line-height:1.6}
+.fg input,.fg select,.fg textarea{width:100%;padding:14px 16px;background:var(--bg1);border:1px solid var(--brd);border-radius:12px;color:var(--txt1);font-size:16px;font-family:inherit;-webkit-appearance:none}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--g)}
+.lbtn{width:100%;padding:16px;background:linear-gradient(135deg,#00e676,#00c853);border:none;border-radius:12px;color:#060a13;font-size:15px;font-weight:700;cursor:pointer;letter-spacing:1px;margin-top:8px}
+
+/* NAV */
 .dash{display:none;min-height:100vh}
-.nav{display:flex;align-items:center;justify-content:space-between;padding:0 12px;height:50px;background:var(--bg2);border-bottom:1px solid var(--brd);position:sticky;top:0;z-index:100;gap:6px;overflow-x:auto}
-.brand{font-size:14px;font-weight:800;letter-spacing:1px;white-space:nowrap;flex-shrink:0}.brand span{color:var(--g)}
-.nav-r{display:flex;gap:4px;align-items:center;flex-shrink:0}
-.pill{padding:4px 8px;border-radius:20px;font-size:9px;font-weight:700;white-space:nowrap}.pill.on{background:rgba(0,230,118,0.15);color:var(--g)}
+.nav{display:flex;align-items:center;padding:0 12px;height:52px;background:var(--bg2);border-bottom:1px solid var(--brd);position:sticky;top:0;z-index:100;gap:8px}
+.brand{font-size:14px;font-weight:800;letter-spacing:1px;white-space:nowrap}.brand span{color:var(--g)}
+.quote-bar{background:linear-gradient(135deg,rgba(0,230,118,0.08),rgba(68,138,255,0.08));border-bottom:1px solid var(--brd);padding:8px 16px;text-align:center;font-size:13px;font-style:italic;color:var(--g);letter-spacing:0.3px}
+.nav-r{display:flex;gap:5px;align-items:center;margin-left:auto;flex-shrink:0}
+.pill{padding:4px 8px;border-radius:20px;font-size:9px;font-weight:700;white-space:nowrap;background:rgba(0,230,118,0.15);color:var(--g)}
 .vix-pill{padding:4px 8px;border-radius:20px;font-size:9px;font-weight:700;white-space:nowrap}
 .ap-btn{padding:5px 12px;border-radius:20px;font-size:9px;font-weight:700;cursor:pointer;border:none;white-space:nowrap}.ap-btn.off{background:var(--bg3);color:var(--txt2);border:1px solid var(--brd)}.ap-btn.on{background:rgba(0,230,118,0.2);color:var(--g);border:1px solid var(--g)}
 .kill-btn{padding:5px 10px;border-radius:20px;font-size:9px;font-weight:700;cursor:pointer;border:1px solid var(--r);background:rgba(255,23,68,0.15);color:var(--r);white-space:nowrap}
 .theme-btn{padding:5px 10px;border-radius:20px;font-size:9px;cursor:pointer;border:1px solid var(--brd);background:var(--bg3);color:var(--txt2);white-space:nowrap}
-.tabs{display:flex;gap:0;background:var(--bg2);border-bottom:1px solid var(--brd);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
-.tab{padding:10px 14px;font-size:10px;font-weight:700;color:var(--txt3);cursor:pointer;border-bottom:2px solid transparent;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;flex-shrink:0}.tab:hover{color:var(--txt2)}.tab.active{color:var(--g);border-bottom-color:var(--g)}
+
+/* TABS */
+.tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--brd);overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
+.tab{padding:10px 14px;font-size:10px;font-weight:700;color:var(--txt3);cursor:pointer;border-bottom:2px solid transparent;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;flex-shrink:0}.tab.active{color:var(--g);border-bottom-color:var(--g)}
 .tab-content{display:none}.tab-content.active{display:block}
-.main{display:flex;flex-direction:column;width:100%}.left{padding:12px;display:flex;flex-direction:column;gap:12px}.right{background:var(--bg2);padding:12px;display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--brd)}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.stat{background:var(--bg3);border:1px solid var(--brd);border-radius:10px;padding:10px}.stat-l{font-size:9px;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;font-weight:600}.stat-v{font-size:16px;font-weight:700}
+
+/* LAYOUT */
+.main{display:flex;flex-direction:column}.left{padding:12px;display:flex;flex-direction:column;gap:12px}
+.right{background:var(--bg2);padding:12px;display:flex;flex-direction:column;gap:10px;border-top:1px solid var(--brd)}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--bg3);border:1px solid var(--brd);border-radius:10px;padding:10px}.stat-l{font-size:9px;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;font-weight:600}.stat-v{font-size:16px;font-weight:700}
 .grn{color:var(--g)}.red{color:var(--r)}.blu{color:var(--b)}.amb{color:var(--a)}.pur{color:var(--p)}.cyn{color:var(--c)}
-.card{background:var(--bg3);border:1px solid var(--brd);border-radius:12px;overflow:hidden;margin-bottom:12px}.card-h{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--brd);flex-wrap:wrap;gap:4px}.card-t{font-size:12px;font-weight:700}.cnt{background:rgba(68,138,255,0.2);color:var(--b);padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;margin-left:6px}
-.card-body{padding:0;overflow-x:auto;-webkit-overflow-scrolling:touch}.empty{padding:30px 20px;text-align:center;color:var(--txt3);font-size:12px}.empty .ico{font-size:24px;margin-bottom:8px}
-.tag{padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;display:inline-block}.tag-cs{background:rgba(0,230,118,0.15);color:var(--g)}.tag-dir{background:rgba(68,138,255,0.15);color:var(--b)}
-table{width:100%;border-collapse:collapse;min-width:450px}th{font-size:9px;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;padding:8px 10px;text-align:left;font-weight:600;border-bottom:1px solid var(--brd);white-space:nowrap}td{padding:7px 10px;font-size:11px;border-bottom:1px solid rgba(30,45,69,0.5);white-space:nowrap}
+
+/* CARDS */
+.card{background:var(--bg3);border:1px solid var(--brd);border-radius:12px;overflow:hidden;margin-bottom:12px}
+.card-h{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--brd)}.card-t{font-size:12px;font-weight:700}
+.cnt{background:rgba(68,138,255,0.2);color:var(--b);padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;margin-left:6px}
+.card-body{padding:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.empty{padding:30px 20px;text-align:center;color:var(--txt3);font-size:12px}.empty .ico{font-size:24px;margin-bottom:8px}
+.tag{padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700}.tag-cs{background:rgba(0,230,118,0.15);color:var(--g)}.tag-dir{background:rgba(68,138,255,0.15);color:var(--b)}
+table{width:100%;border-collapse:collapse;min-width:420px}th{font-size:9px;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;padding:8px 10px;text-align:left;font-weight:600;border-bottom:1px solid var(--brd);white-space:nowrap}td{padding:7px 10px;font-size:11px;border-bottom:1px solid rgba(30,45,69,0.5);white-space:nowrap}
 .act-btn{padding:6px 12px;border-radius:6px;font-size:10px;font-weight:600;cursor:pointer;border:1px solid var(--brd);background:var(--bg1);color:var(--txt2);min-height:32px}.act-btn:active{opacity:0.7}
-.rsec{background:var(--bg3);border:1px solid var(--brd);border-radius:12px;overflow:hidden}.rsec-h{padding:10px 14px;border-bottom:1px solid var(--brd);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--txt2)}.rsec-b{padding:10px 14px}
-.clock{display:flex;align-items:center;justify-content:center;gap:14px;padding:12px;background:var(--bg3);border:1px solid var(--brd);border-radius:12px}.clock-t{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}.clock-l{font-size:9px;color:var(--txt3);text-transform:uppercase;letter-spacing:1.5px}.clock-s{padding:4px 10px;border-radius:6px;font-size:10px;font-weight:700}.clock-s.open{background:rgba(0,230,118,0.2);color:var(--g)}.clock-s.closed{background:rgba(255,23,68,0.2);color:var(--r)}
-.ggrid{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:6px}.gbox{padding:8px;border-radius:8px;background:var(--bg1);text-align:center}.gbox-l{font-size:9px;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}.gbox-v{font-size:14px;font-weight:700}
-.prot{display:flex;flex-direction:column;gap:3px}.prot-i{display:flex;align-items:center;justify-content:space-between;padding:5px 8px;border-radius:6px;background:var(--bg1);font-size:10px}.prot-n{color:var(--txt2)}.prot-s{font-size:9px;font-weight:700}.prot-s.on{color:var(--g)}
-.log-i{display:flex;gap:8px;padding:5px 0;border-bottom:1px solid rgba(30,45,69,0.4)}.log-d{width:7px;height:7px;border-radius:50%;margin-top:4px;flex-shrink:0}.log-d.alert{background:var(--a)}.log-d.entry{background:var(--b)}.log-d.system{background:#6b7280}.log-d.position{background:var(--p)}
+
+/* SIDEBAR SECTIONS */
+.rsec{background:var(--bg3);border:1px solid var(--brd);border-radius:12px;overflow:hidden}
+.rsec-h{padding:10px 14px;border-bottom:1px solid var(--brd);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--txt2)}
+.rsec-b{padding:10px 14px;font-size:12px;line-height:1.6}
+.clock{display:flex;align-items:center;justify-content:center;gap:14px;padding:12px;background:var(--bg3);border:1px solid var(--brd);border-radius:12px}
+.clock-t{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}.clock-l{font-size:9px;color:var(--txt3);text-transform:uppercase;letter-spacing:1.5px}
+.clock-s{padding:4px 10px;border-radius:6px;font-size:10px;font-weight:700}.clock-s.open{background:rgba(0,230,118,0.2);color:var(--g)}.clock-s.closed{background:rgba(255,23,68,0.2);color:var(--r)}
+.ggrid{display:grid;grid-template-columns:1fr 1fr;gap:6px}.gbox{padding:8px;border-radius:8px;background:var(--bg1);text-align:center}.gbox-l{font-size:9px;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}.gbox-v{font-size:14px;font-weight:700}
+.prot{display:flex;flex-direction:column;gap:3px}.prot-i{display:flex;align-items:center;justify-content:space-between;padding:5px 8px;border-radius:6px;background:var(--bg1);font-size:10px}.prot-n{color:var(--txt2)}.prot-s{font-size:9px;font-weight:700;color:var(--g)}
+.log-i{display:flex;gap:8px;padding:5px 0;border-bottom:1px solid rgba(30,45,69,0.4)}.log-d{width:7px;height:7px;border-radius:50%;margin-top:4px;flex-shrink:0}.log-d.alert{background:var(--a)}.log-d.entry{background:var(--b)}.log-d.system{background:#6b7280}
 .log-t{font-size:11px;color:var(--txt2);line-height:1.4}.log-tm{font-size:9px;color:var(--txt3)}
-.full-page{padding:14px;width:100%}.bt-form{display:flex;gap:8px;align-items:flex-end;margin-bottom:16px;flex-wrap:wrap}.bt-form .fg{margin-bottom:0;flex:1;min-width:120px}
-.bt-btn{padding:14px 24px;background:linear-gradient(135deg,var(--b),#2962ff);border:none;border-radius:12px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;width:100%}.bt-btn:active{transform:scale(0.98)}.bt-btn:disabled{opacity:0.5}
-.sm-btn{padding:8px 16px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--brd);background:var(--bg1);color:var(--txt1)}.sm-btn:active{opacity:0.7}.sm-btn.primary{background:linear-gradient(135deg,var(--g),#00c853);color:#060a13;border:none}
-.metrics-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}.metric{background:var(--bg3);border:1px solid var(--brd);border-radius:12px;padding:14px;text-align:center}.metric-l{font-size:9px;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}.metric-v{font-size:18px;font-weight:700}
+
+/* FULL PAGE TABS */
+.full-page{padding:14px}
+.metrics-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}
+.metric{background:var(--bg3);border:1px solid var(--brd);border-radius:12px;padding:14px;text-align:center}.metric-l{font-size:9px;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}.metric-v{font-size:18px;font-weight:700}
+.bt-form{display:flex;gap:8px;align-items:flex-end;margin-bottom:16px;flex-wrap:wrap}.bt-form .fg{margin-bottom:0;flex:1;min-width:120px}
+.bt-btn{padding:14px 24px;background:linear-gradient(135deg,var(--b),#2962ff);border:none;border-radius:12px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;width:100%}.bt-btn:disabled{opacity:0.5}
+.sm-btn{padding:8px 16px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1px solid var(--brd);background:var(--bg1);color:var(--txt1);text-decoration:none;display:inline-block}.sm-btn.primary{background:linear-gradient(135deg,var(--g),#00c853);color:#060a13;border:none}
 .bar-row{display:flex;align-items:center;gap:6px;padding:3px 0}.bar-label{font-size:10px;color:var(--txt2);width:50px;text-align:right}.bar-track{flex:1;height:18px;background:var(--bg1);border-radius:4px;overflow:hidden}.bar-fill{height:100%;border-radius:4px}.bar-val{font-size:10px;font-weight:700;width:60px}
+
+/* HEATMAP */
 .hm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.hm-cell{padding:14px;border-radius:10px;text-align:center}.hm-name{font-size:11px;font-weight:700;margin-bottom:2px}.hm-val{font-size:16px;font-weight:800}
-.cal-item{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;background:var(--bg1);margin-bottom:6px}.cal-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}.cal-dot.high{background:var(--r)}.cal-dot.medium{background:var(--a)}.cal-dot.info{background:var(--b)}
-.cal-info{flex:1}.cal-ev{font-size:12px;font-weight:600}.cal-dt{font-size:10px;color:var(--txt3)}.cal-days{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--bg3);white-space:nowrap}
-.jnl-entry{background:var(--bg1);border:1px solid var(--brd);border-radius:10px;padding:12px;margin-bottom:8px}.jnl-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.jnl-sym{font-size:13px;font-weight:700}.jnl-dt{font-size:10px;color:var(--txt3)}.jnl-body{font-size:11px;color:var(--txt2);line-height:1.5}
+
+/* CALENDAR */
+.cal-item{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;background:var(--bg1);margin-bottom:6px}
+.cal-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}.cal-dot.high{background:var(--r)}.cal-dot.medium{background:var(--a)}.cal-dot.info{background:var(--b)}
+.cal-info{flex:1}.cal-ev{font-size:12px;font-weight:600}.cal-dt{font-size:10px;color:var(--txt3)}
+.cal-days{font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--bg3);white-space:nowrap}
+
+/* JOURNAL */
+.jnl-entry{background:var(--bg1);border:1px solid var(--brd);border-radius:10px;padding:12px;margin-bottom:8px}
+.jnl-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.jnl-sym{font-size:13px;font-weight:700}.jnl-dt{font-size:10px;color:var(--txt3)}
+.jnl-body{font-size:11px;color:var(--txt2);line-height:1.5}
+
+/* TRADE SHARE CARD */
+.share-card{background:linear-gradient(165deg,#080d18,#0c1220,#111b30);border:1px solid rgba(0,230,118,0.15);border-radius:16px;padding:20px;margin-bottom:12px;position:relative}
+.share-card.loss{border-color:rgba(255,23,68,0.15)}
+.sc-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.sc-sym{font-size:22px;font-weight:800}.sc-tag{padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;margin-left:8px}
+.sc-pnl{font-size:32px;font-weight:800;text-align:center;margin:8px 0}
+.sc-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:12px 0}
+.sc-stat{background:rgba(255,255,255,0.03);border-radius:8px;padding:8px;text-align:center;border:1px solid rgba(255,255,255,0.04)}
+.sc-stat-l{font-size:8px;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}.sc-stat-v{font-size:14px;font-weight:700;color:var(--txt1)}
+.sc-verse{font-size:10px;color:var(--txt3);font-style:italic;text-align:center;margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.04);line-height:1.5}
+.sc-foot{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.sc-brand{font-size:11px;font-weight:800;letter-spacing:1px;color:var(--txt1)}.sc-brand span{color:var(--g)}
+.sc-ver{font-size:9px;color:var(--txt3)}
+.copy-btn{padding:6px 14px;border-radius:8px;font-size:10px;font-weight:700;cursor:pointer;border:1px solid var(--g);background:rgba(0,230,118,0.1);color:var(--g);margin-top:6px}.copy-btn:active{opacity:0.7}
+
+/* WARN BAR */
 .warn-bar{background:rgba(255,171,0,0.15);border:1px solid rgba(255,171,0,0.3);border-radius:10px;padding:10px 14px;margin:12px 12px 0;font-size:11px;color:var(--a);display:none}
 .built{text-align:center;padding:16px;font-size:10px;color:var(--txt3)}.built span{color:var(--g)}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
-@media(min-width:768px){.main{flex-direction:row}.left{flex:1;max-height:calc(100vh - 104px);overflow-y:auto}.right{width:320px;max-height:calc(100vh - 104px);overflow-y:auto;border-top:none;border-left:1px solid var(--brd)}.stats{grid-template-columns:repeat(6,1fr)}.metrics-grid{grid-template-columns:repeat(4,1fr)}}
-@media(max-width:480px){.stats{grid-template-columns:repeat(2,1fr)}.ggrid{grid-template-columns:1fr 1fr}.stat-v{font-size:15px}.metric-v{font-size:16px}table{min-width:400px}.hm-grid{grid-template-columns:repeat(2,1fr)}}
+
+@media(min-width:768px){
+.main{flex-direction:row}.left{flex:1;max-height:calc(100vh - 104px);overflow-y:auto}
+.right{width:300px;max-height:calc(100vh - 104px);overflow-y:auto;border-top:none;border-left:1px solid var(--brd)}
+.stats{grid-template-columns:repeat(6,1fr)}.metrics-grid{grid-template-columns:repeat(4,1fr)}.ggrid{grid-template-columns:1fr 1fr 1fr 1fr}
+}
+@media(max-width:480px){.stats{grid-template-columns:repeat(2,1fr)}.metric-v{font-size:16px}}
 </style></head><body>
+
+<!-- LOGIN -->
 <div class="login" id="ls"><div class="lbox">
 <h1>PROJECT <span>HOPE</span></h1><div class="lsub">AUTOPILOT TRADING SYSTEM</div>
-<div class="lver">v3.0 FINAL &mdash; Built by Stephen Martinez | Lancaster, PA</div>
-<div class="fg"><label>Username</label><input type="text" id="lu" placeholder="Enter username" autocomplete="username"></div>
-<div class="fg"><label>Password</label><input type="password" id="lp" placeholder="Enter password" autocomplete="current-password"></div>
+<div class="fg"><label>Username</label><input type="text" id="lu" placeholder="Enter username"></div>
+<div class="fg"><label>Password</label><input type="password" id="lp" placeholder="Enter password"></div>
 <button class="lbtn" onclick="doLogin()">Launch Platform</button>
-<div class="lfoot">162 Symbols &bull; Earnings Calendar &bull; IV Rank &bull; Risk Analyzer<br>Greeks &bull; Backtest &bull; Journal &bull; Persistent Storage</div>
 </div></div>
+
+<!-- DASHBOARD -->
 <div class="dash" id="db">
-<div class="nav"><div class="brand">PROJECT <span>HOPE</span></div><div class="nav-r">
-<div class="pill on" id="sp"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--g);margin-right:3px;animation:pulse 2s infinite"></span>LIVE</div>
+<div class="nav">
+<div class="brand">PROJECT <span>HOPE</span></div>
+<div class="nav-r">
+<div class="pill" id="sp"><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--g);margin-right:3px;animation:pulse 2s infinite"></span>LIVE</div>
 <div class="vix-pill" id="vix-pill">VIX --</div>
 <button class="ap-btn off" id="ab" onclick="toggleAP()">AP OFF</button>
 <button class="kill-btn" onclick="closeAll()">CLOSE ALL</button>
 <button class="theme-btn" onclick="toggleTheme()">&#9788;</button>
 </div></div>
+
 <div class="tabs">
 <div class="tab active" onclick="showTab('trading',this)">Trading</div>
 <div class="tab" onclick="showTab('screener',this)">Screener</div>
@@ -89,60 +151,192 @@ table{width:100%;border-collapse:collapse;min-width:450px}th{font-size:9px;color
 <div class="tab" onclick="showTab('risk',this)">Risk</div>
 <div class="tab" onclick="showTab('calendar',this)">Calendar</div>
 </div>
+<div class="quote-bar" id="daily-quote"></div>
 <div class="warn-bar" id="warn-bar"></div>
+
+<!-- TAB: TRADING -->
 <div class="tab-content active" id="tc-trading"><div class="main"><div class="left">
-<div class="stats"><div class="stat"><div class="stat-l">Account</div><div class="stat-v" id="av">$6,000</div></div><div class="stat"><div class="stat-l">Buying Power</div><div class="stat-v" id="bp">$6,000</div></div><div class="stat"><div class="stat-l">Day P&amp;L</div><div class="stat-v grn" id="dp">$0.00</div></div><div class="stat"><div class="stat-l">Total P&amp;L</div><div class="stat-v grn" id="tp">$0.00</div></div><div class="stat"><div class="stat-l">Win Rate</div><div class="stat-v amb" id="wr">--</div></div><div class="stat"><div class="stat-l">Symbols</div><div class="stat-v pur" id="sc">162</div></div></div>
+<div class="stats">
+<div class="stat"><div class="stat-l">Account</div><div class="stat-v" id="av">$6,000</div></div>
+<div class="stat"><div class="stat-l">Buying Power</div><div class="stat-v" id="bp">$6,000</div></div>
+<div class="stat"><div class="stat-l">Day P&amp;L</div><div class="stat-v grn" id="dp">$0.00</div></div>
+<div class="stat"><div class="stat-l">Total P&amp;L</div><div class="stat-v grn" id="tp">$0.00</div></div>
+<div class="stat"><div class="stat-l">Win Rate</div><div class="stat-v amb" id="wr">--</div></div>
+<div class="stat"><div class="stat-l">Symbols</div><div class="stat-v pur" id="sc">162</div></div>
+</div>
 <div class="card"><div class="card-h"><div class="card-t">Credit Spreads<span class="cnt" id="cs-cnt">0</span></div><span class="tag tag-cs">80%</span></div><div class="card-body" id="cs-body"><div class="empty"><div class="ico">&#128200;</div>No open spreads</div></div></div>
 <div class="card"><div class="card-h"><div class="card-t">Directional<span class="cnt" id="dir-cnt">0</span></div><span class="tag tag-dir">20%</span></div><div class="card-body" id="dir-body"><div class="empty"><div class="ico">&#9889;</div>No open trades</div></div></div>
-</div><div class="right">
+</div>
+<div class="right">
 <div class="clock"><div><div class="clock-t" id="ct">--:--:--</div><div class="clock-l">Eastern Time</div></div><div class="clock-s closed" id="ms">CLOSED</div></div>
-<div class="rsec"><div class="rsec-h">Portfolio Greeks</div><div class="rsec-b"><div class="ggrid"><div class="gbox"><div class="gbox-l">Delta</div><div class="gbox-v" id="g-delta">0</div></div><div class="gbox"><div class="gbox-l">Gamma</div><div class="gbox-v" id="g-gamma">0</div></div><div class="gbox"><div class="gbox-l">Theta</div><div class="gbox-v grn" id="g-theta">$0</div></div><div class="gbox"><div class="gbox-l">Vega</div><div class="gbox-v" id="g-vega">0</div></div></div></div></div>
-<div class="rsec"><div class="rsec-h">Exit Rules</div><div class="rsec-b" style="font-size:11px;color:var(--txt2);line-height:1.8"><div style="color:var(--txt3);font-size:10px;font-weight:600">SPREADS</div><span class="grn">TP 50%</span> &bull; <span class="red">SL 200%</span> &bull; Close 21d &bull; Emergency 7d<div style="color:var(--txt3);font-size:10px;font-weight:600;margin-top:6px">DIRECTIONAL</div><span class="amb">T1 +15%</span> 50% &bull; <span class="blu">T2 +25%</span> 25% &bull; <span class="grn">T3 +30%</span> all &bull; <span class="red">SL -15%</span></div></div>
-<div class="rsec"><div class="rsec-h">16 Protections</div><div class="rsec-b"><div class="prot" id="prot-list"></div></div></div>
-<div class="rsec"><div class="rsec-h">Activity Log</div><div class="rsec-b" id="al" style="max-height:220px;overflow-y:auto"></div></div>
+<div class="rsec"><div class="rsec-h">Portfolio Greeks</div><div class="rsec-b"><div class="ggrid">
+<div class="gbox"><div class="gbox-l">Delta</div><div class="gbox-v" id="g-delta">0</div></div>
+<div class="gbox"><div class="gbox-l">Gamma</div><div class="gbox-v" id="g-gamma">0</div></div>
+<div class="gbox"><div class="gbox-l">Theta</div><div class="gbox-v grn" id="g-theta">$0</div></div>
+<div class="gbox"><div class="gbox-l">Vega</div><div class="gbox-v" id="g-vega">0</div></div>
 </div></div></div>
-<div class="tab-content" id="tc-screener"><div class="full-page"><h2 style="font-size:16px;margin-bottom:14px">Options Screener <span id="scr-count" style="font-size:11px;color:var(--txt3)"></span></h2>
+<div class="rsec"><div class="rsec-h">16 Protections</div><div class="rsec-b"><div class="prot" id="prot-list"></div></div></div>
+<div class="rsec"><div class="rsec-h">Activity Log</div><div class="rsec-b" id="al" style="max-height:200px;overflow-y:auto"></div></div>
+</div></div></div>
+
+<!-- TAB: SCREENER -->
+<div class="tab-content" id="tc-screener"><div class="full-page">
+<h2 style="font-size:16px;margin-bottom:14px">Options Screener <span id="scr-count" style="font-size:11px;color:var(--txt3)"></span></h2>
 <div class="card"><div class="card-h"><div class="card-t">Credit Spreads<span class="cnt" id="scr-sp-cnt">0</span></div></div><div class="card-body" id="scr-spreads"><div class="empty">Scanning...</div></div></div>
-<div class="card"><div class="card-h"><div class="card-t">Directional<span class="cnt" id="scr-dir-cnt">0</span></div></div><div class="card-body" id="scr-dir"><div class="empty">Scanning...</div></div></div></div></div>
-<div class="tab-content" id="tc-greeks"><div class="full-page"><h2 style="font-size:16px;margin-bottom:14px">Portfolio Greeks</h2>
+<div class="card"><div class="card-h"><div class="card-t">Directional<span class="cnt" id="scr-dir-cnt">0</span></div></div><div class="card-body" id="scr-dir"><div class="empty">Scanning...</div></div></div>
+</div></div>
+
+<!-- TAB: GREEKS -->
+<div class="tab-content" id="tc-greeks"><div class="full-page">
+<h2 style="font-size:16px;margin-bottom:14px">Portfolio Greeks</h2>
 <div class="metrics-grid"><div class="metric"><div class="metric-l">Net Delta</div><div class="metric-v" id="gd-delta">0</div></div><div class="metric"><div class="metric-l">Net Gamma</div><div class="metric-v" id="gd-gamma">0</div></div><div class="metric"><div class="metric-l">Net Theta</div><div class="metric-v grn" id="gd-theta">$0</div></div><div class="metric"><div class="metric-l">Net Vega</div><div class="metric-v" id="gd-vega">0</div></div></div>
-<div class="card"><div class="card-h"><div class="card-t">Per-Position Greeks</div></div><div class="card-body" id="greeks-positions"><div class="empty">No positions</div></div></div></div></div>
-<div class="tab-content" id="tc-backtest"><div class="full-page"><h2 style="font-size:16px;margin-bottom:14px">Strategy Backtester</h2>
-<div class="bt-form"><div class="fg"><label>Symbol</label><select id="bt-sym"><option>SPY</option><option>QQQ</option><option>AAPL</option><option>MSFT</option><option>AMZN</option><option>GOOGL</option><option>NVDA</option><option>AMD</option><option>TSLA</option><option>META</option></select></div><div class="fg"><label>Period</label><select id="bt-days"><option value="180">6 Months</option><option value="365" selected>1 Year</option><option value="730">2 Years</option></select></div><button class="bt-btn" id="bt-run" onclick="runBacktest()">Run Backtest</button></div><div id="bt-results"></div></div></div>
-<div class="tab-content" id="tc-analytics"><div class="full-page"><h2 style="font-size:16px;margin-bottom:4px">Performance Analytics</h2><div style="margin-bottom:14px"><a href="/api/export/csv" class="sm-btn" style="text-decoration:none;display:inline-block;margin-top:6px">&#128190; Export CSV</a></div>
-<div class="metrics-grid"><div class="metric"><div class="metric-l">Total Trades</div><div class="metric-v" id="an-total">0</div></div><div class="metric"><div class="metric-l">Win Rate</div><div class="metric-v amb" id="an-wr">--</div></div><div class="metric"><div class="metric-l">Total P&amp;L</div><div class="metric-v" id="an-pnl">$0</div></div><div class="metric"><div class="metric-l">Sharpe</div><div class="metric-v" id="an-sharpe">--</div></div><div class="metric"><div class="metric-l">Profit Factor</div><div class="metric-v" id="an-pf">--</div></div><div class="metric"><div class="metric-l">Max Drawdown</div><div class="metric-v red" id="an-dd">--</div></div><div class="metric"><div class="metric-l">Avg Win</div><div class="metric-v grn" id="an-aw">--</div></div><div class="metric"><div class="metric-l">Avg Loss</div><div class="metric-v red" id="an-al">--</div></div></div>
+<div class="card"><div class="card-h"><div class="card-t">Per-Position Greeks</div></div><div class="card-body" id="greeks-positions"><div class="empty">No positions</div></div></div>
+</div></div>
+
+<!-- TAB: BACKTEST -->
+<div class="tab-content" id="tc-backtest"><div class="full-page">
+<h2 style="font-size:16px;margin-bottom:14px">Strategy Backtester</h2>
+<div class="bt-form"><div class="fg"><label>Symbol</label><select id="bt-sym"><option>SPY</option><option>QQQ</option><option>AAPL</option><option>MSFT</option><option>AMZN</option><option>NVDA</option><option>TSLA</option><option>META</option></select></div><div class="fg"><label>Period</label><select id="bt-days"><option value="180">6 Months</option><option value="365" selected>1 Year</option><option value="730">2 Years</option></select></div><button class="bt-btn" id="bt-run" onclick="runBacktest()">Run Backtest</button></div><div id="bt-results"></div>
+</div></div>
+
+<!-- TAB: ANALYTICS (with auto share cards) -->
+<div class="tab-content" id="tc-analytics"><div class="full-page">
+<h2 style="font-size:16px;margin-bottom:4px">Performance Analytics</h2>
+<div style="margin-bottom:14px"><a href="/api/export/csv" class="sm-btn" style="margin-top:6px">&#128190; Export CSV</a></div>
+<div class="metrics-grid">
+<div class="metric"><div class="metric-l">Total Trades</div><div class="metric-v" id="an-total">0</div></div>
+<div class="metric"><div class="metric-l">Win Rate</div><div class="metric-v amb" id="an-wr">--</div></div>
+<div class="metric"><div class="metric-l">Total P&amp;L</div><div class="metric-v" id="an-pnl">$0</div></div>
+<div class="metric"><div class="metric-l">Sharpe</div><div class="metric-v" id="an-sharpe">--</div></div>
+<div class="metric"><div class="metric-l">Profit Factor</div><div class="metric-v" id="an-pf">--</div></div>
+<div class="metric"><div class="metric-l">Max Drawdown</div><div class="metric-v red" id="an-dd">--</div></div>
+<div class="metric"><div class="metric-l">Avg Win</div><div class="metric-v grn" id="an-aw">--</div></div>
+<div class="metric"><div class="metric-l">Avg Loss</div><div class="metric-v red" id="an-al">--</div></div>
+</div>
 <div class="card"><div class="card-h"><div class="card-t">Monthly</div></div><div class="card-body" id="an-monthly"><div class="empty">Start trading to see analytics</div></div></div>
-<div class="card"><div class="card-h"><div class="card-t">Recent Trades</div></div><div class="card-body" id="an-trades"><div class="empty">No trades</div></div></div></div></div>
-<div class="tab-content" id="tc-journal"><div class="full-page"><h2 style="font-size:16px;margin-bottom:14px">Trade Journal</h2>
+
+<!-- SHARE CARDS - Auto generated from trades -->
+<h3 style="font-size:14px;margin:20px 0 12px;color:var(--txt2)">&#128247; Trade Recaps — Screenshot or Copy to Share</h3>
+<div id="share-cards"><div class="empty">No closed trades yet. Share cards auto-generate here after each trade.</div></div>
+</div></div>
+
+<!-- TAB: JOURNAL -->
+<div class="tab-content" id="tc-journal"><div class="full-page">
+<h2 style="font-size:16px;margin-bottom:14px">Trade Journal</h2>
 <div class="card" style="margin-bottom:14px"><div class="card-h"><div class="card-t">New Entry</div></div><div class="card-body" style="padding:14px">
-<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px"><div class="fg" style="flex:1;min-width:100px;margin:0"><label>Symbol</label><input id="jnl-sym" placeholder="AAPL"></div><div class="fg" style="flex:1;min-width:100px;margin:0"><label>Type</label><select id="jnl-type"><option>trade</option><option>note</option><option>lesson</option><option>review</option></select></div><div class="fg" style="flex:1;min-width:100px;margin:0"><label>Emotion</label><select id="jnl-emo"><option>neutral</option><option>confident</option><option>fearful</option><option>greedy</option><option>frustrated</option></select></div></div>
-<div class="fg" style="margin-bottom:10px"><label>Notes</label><textarea id="jnl-notes" rows="3" placeholder="What happened? What did you learn?"></textarea></div><button class="sm-btn primary" onclick="addJournal()">Save Entry</button></div></div>
-<div id="jnl-entries"><div class="empty">No journal entries yet</div></div></div></div>
-<div class="tab-content" id="tc-risk"><div class="full-page"><h2 style="font-size:16px;margin-bottom:14px">Risk Analyzer</h2>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+<div class="fg" style="flex:1;min-width:100px;margin:0"><label>Symbol</label><input id="jnl-sym" placeholder="AAPL"></div>
+<div class="fg" style="flex:1;min-width:100px;margin:0"><label>Type</label><select id="jnl-type"><option>trade</option><option>note</option><option>lesson</option></select></div>
+<div class="fg" style="flex:1;min-width:100px;margin:0"><label>Emotion</label><select id="jnl-emo"><option>neutral</option><option>confident</option><option>fearful</option><option>greedy</option></select></div></div>
+<div class="fg" style="margin-bottom:10px"><label>Notes</label><textarea id="jnl-notes" rows="3" placeholder="What happened? What did you learn?"></textarea></div>
+<button class="sm-btn primary" onclick="addJournal()">Save Entry</button>
+</div></div><div id="jnl-entries"><div class="empty">No journal entries yet</div></div>
+</div></div>
+
+<!-- TAB: RISK -->
+<div class="tab-content" id="tc-risk"><div class="full-page">
+<h2 style="font-size:16px;margin-bottom:14px">Risk Analyzer</h2>
 <div class="card" style="margin-bottom:14px"><div class="card-h"><div class="card-t">Sector Heatmap</div></div><div class="card-body" style="padding:12px"><div class="hm-grid" id="heatmap"></div></div></div>
 <div class="card" style="margin-bottom:14px"><div class="card-h"><div class="card-t">Stress Test</div></div><div class="card-body" id="stress-body"><div class="empty">Loading...</div></div></div>
-<div class="metrics-grid" id="risk-metrics"></div></div></div>
-<div class="tab-content" id="tc-calendar"><div class="full-page"><h2 style="font-size:16px;margin-bottom:14px">Economic &amp; Earnings Calendar</h2>
-<div class="metrics-grid" style="grid-template-columns:repeat(2,1fr)"><div class="metric"><div class="metric-l">Next FOMC</div><div class="metric-v cyn" id="cal-fomc">--</div></div><div class="metric"><div class="metric-l">Next CPI</div><div class="metric-v amb" id="cal-cpi">--</div></div><div class="metric"><div class="metric-l">Next Jobs</div><div class="metric-v blu" id="cal-jobs">--</div></div><div class="metric"><div class="metric-l">Next OpEx</div><div class="metric-v pur" id="cal-opex">--</div></div></div>
+<div class="metrics-grid" id="risk-metrics"></div>
+</div></div>
+
+<!-- TAB: CALENDAR -->
+<div class="tab-content" id="tc-calendar"><div class="full-page">
+<h2 style="font-size:16px;margin-bottom:14px">Economic &amp; Earnings Calendar</h2>
+<div class="metrics-grid" style="grid-template-columns:repeat(2,1fr)">
+<div class="metric"><div class="metric-l">Next FOMC</div><div class="metric-v cyn" id="cal-fomc">--</div></div>
+<div class="metric"><div class="metric-l">Next CPI</div><div class="metric-v amb" id="cal-cpi">--</div></div>
+<div class="metric"><div class="metric-l">Next Jobs</div><div class="metric-v blu" id="cal-jobs">--</div></div>
+<div class="metric"><div class="metric-l">Next OpEx</div><div class="metric-v pur" id="cal-opex">--</div></div></div>
 <div class="card" style="margin-bottom:14px"><div class="card-h"><div class="card-t">Upcoming Events</div></div><div class="card-body" style="padding:12px" id="cal-events"><div class="empty">Loading...</div></div></div>
-<div class="card"><div class="card-h"><div class="card-t">Earnings Blackout</div><span class="cnt" id="earn-cnt">0</span></div><div class="card-body" style="padding:12px" id="earn-list"><div class="empty">No earnings detected nearby</div></div></div></div></div>
-<div class="built">PROJECT <span>HOPE</span> v3.0 FINAL &mdash; Stephen Martinez &mdash; 162 Symbols &bull; Full Autopilot</div>
+<div class="card"><div class="card-h"><div class="card-t">Earnings Blackout</div><span class="cnt" id="earn-cnt">0</span></div><div class="card-body" style="padding:12px" id="earn-list"><div class="empty">No earnings detected</div></div></div>
+</div></div>
+
+<div class="built">PROJECT <span>HOPE</span> v3.0 &mdash; Stephen Martinez &mdash; 162 Symbols &bull; Full Autopilot</div>
 </div>
+
 <script>
-function doLogin(){if(document.getElementById("lu").value&&document.getElementById("lp").value){document.getElementById("ls").style.display="none";document.getElementById("db").style.display="block";startClock();startData()}}
+/* === BIBLE VERSES === */
+var verses=[
+"For I know the plans I have for you, declares the Lord. — Jeremiah 29:11",
+"I can do all things through Christ who strengthens me. — Philippians 4:13",
+"Trust in the Lord with all your heart. — Proverbs 3:5",
+"The Lord is my shepherd; I shall not want. — Psalm 23:1",
+"Be strong and courageous. Do not be afraid. — Joshua 1:9",
+"And we know that all things work together for good. — Romans 8:28",
+"The Lord will fight for you; you need only to be still. — Exodus 14:14",
+"Commit to the Lord whatever you do, and he will establish your plans. — Proverbs 16:3",
+"But those who hope in the Lord will renew their strength. — Isaiah 40:31",
+"Have I not commanded you? Be strong and courageous. — Joshua 1:9",
+"God is our refuge and strength, an ever-present help in trouble. — Psalm 46:1",
+"Do not be anxious about anything. — Philippians 4:6",
+"The blessing of the Lord brings wealth, without painful toil. — Proverbs 10:22",
+"Delight yourself in the Lord, and he will give you the desires of your heart. — Psalm 37:4",
+"Whatever you do, work at it with all your heart. — Colossians 3:23",
+"He who began a good work in you will carry it on to completion. — Philippians 1:6",
+"Faith is the substance of things hoped for. — Hebrews 11:1",
+"With God all things are possible. — Matthew 19:26",
+"The plans of the diligent lead to profit. — Proverbs 21:5",
+"A generous person will prosper. — Proverbs 11:25",
+"The Lord makes firm the steps of the one who delights in him. — Psalm 37:23",
+"No weapon formed against you shall prosper. — Isaiah 54:17",
+"Cast all your anxiety on him because he cares for you. — 1 Peter 5:7",
+"The steadfast love of the Lord never ceases. — Lamentations 3:22",
+"He gives strength to the weary. — Isaiah 40:29",
+"Be still, and know that I am God. — Psalm 46:10",
+"The joy of the Lord is your strength. — Nehemiah 8:10",
+"In all your ways acknowledge him, and he will make straight your paths. — Proverbs 3:6",
+"You intended to harm me, but God intended it for good. — Genesis 50:20",
+"My grace is sufficient for you. — 2 Corinthians 12:9"
+];
+
+/* === MOTIVATIONAL QUOTES === */
+var quotes=[
+'"Discipline is the bridge between goals and accomplishment."',
+'"The stock market is a device for transferring money from the impatient to the patient."',
+'"Risk comes from not knowing what you are doing."',
+'"The goal isn\'t more money. The goal is living life on your terms."',
+'"Winners never quit and quitters never win."',
+'"Fortune favors the bold."',
+'"Success is not final, failure is not fatal: it is the courage to continue."',
+'"The best investment you can make is in yourself."',
+'"Small daily improvements lead to stunning results."',
+'"Stay focused. Stay patient. Stay disciplined."',
+'"Dream big. Start small. Act now."',
+'"Your future is created by what you do today."',
+'"Hardest workers in the room. Every single day."',
+'"It always seems impossible until it\'s done."',
+'"Be fearful when others are greedy, greedy when others are fearful."'
+];
+
+function randVerse(){return verses[Math.floor(Math.random()*verses.length)]}
+function randQuote(){return quotes[Math.floor(Math.random()*quotes.length)]}
+
+/* === LOGIN === */
+function doLogin(){if(document.getElementById("lu").value&&document.getElementById("lp").value){document.getElementById("ls").style.display="none";document.getElementById("db").style.display="block";startClock();startData();document.getElementById("daily-quote").textContent=randQuote()}}
 document.addEventListener("keypress",function(e){if(e.key==="Enter"&&document.getElementById("ls").style.display!=="none")doLogin()});
+
+/* === PROTECTIONS === */
 var pn=['Max Positions','Max Contracts','2-Min Cooldown','Daily Loss Limit','Stop Loss','Trading Windows','No Double Entry','Volume Filter','Spread Check','IV Rank Filter','Earnings Blackout','Max Daily Trades','EOD Auto-Close','BP Reserve','3-Loss Breaker','Sector Limit'];
-function initP(){var h='';pn.forEach(function(n){h+='<div class="prot-i"><span class="prot-n">'+n+'</span><span class="prot-s on">ACTIVE</span></div>'});document.getElementById("prot-list").innerHTML=h}initP();
-function showTab(n,el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));el.classList.add('active');document.getElementById('tc-'+n).classList.add('active')}
+function initP(){var h='';pn.forEach(function(n){h+='<div class="prot-i"><span class="prot-n">'+n+'</span><span class="prot-s">ACTIVE</span></div>'});document.getElementById("prot-list").innerHTML=h}initP();
+
+/* === TAB SWITCH === */
+function showTab(n,el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));el.classList.add('active');document.getElementById('tc-'+n).classList.add('active');if(n==='analytics')fetchShareCards();if(n==='journal')fetchJournal();if(n==='risk')fetchRisk()}
+
+/* === CLOCK === */
 function startClock(){setInterval(function(){var n=new Date(new Date().toLocaleString("en-US",{timeZone:"America/New_York"}));document.getElementById("ct").textContent=String(n.getHours()).padStart(2,"0")+":"+String(n.getMinutes()).padStart(2,"0")+":"+String(n.getSeconds()).padStart(2,"0");var d=n.getDay(),m=n.getHours()*60+n.getMinutes(),mo=d>=1&&d<=5&&m>=570&&m<=960;var ms=document.getElementById("ms");ms.textContent=mo?"OPEN":"CLOSED";ms.className="clock-s "+(mo?"open":"closed")},1000)}
+
+/* === ACTIONS === */
 function toggleTheme(){document.body.classList.toggle('light');fetch("/api/theme",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({theme:document.body.classList.contains('light')?'light':'dark'})})}
 function toggleAP(){fetch("/api/autopilot",{method:"POST"}).then(r=>r.json()).then(d=>{var b=document.getElementById("ab");b.className="ap-btn "+(d.autopilot?"on":"off");b.textContent="AP "+(d.autopilot?"ON":"OFF")})}
 function closeAll(){if(confirm("CLOSE ALL?")){fetch("/api/close-all",{method:"POST"}).then(r=>r.json()).then(d=>alert("Closed "+d.closed))}}
 function closePos(id,tp){if(confirm("Close?")){fetch("/api/close",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({trade_id:id,trade_type:tp})})}}
-function startData(){fetchData();setInterval(fetchData,5000);fetchRisk();setInterval(fetchRisk,30000)}
-var $=function(id){return document.getElementById(id)};
-function pc(v){return v>=0?'grn':'red'}
-function ps(v){return(v>=0?'+$':'-$')+Math.abs(v).toFixed(2)}
+
+/* === DATA === */
+function startData(){fetchData();setInterval(fetchData,5000);fetchRisk();setInterval(fetchRisk,60000);fetchShareCards()}
+var $=function(id){return document.getElementById(id)};function pc(v){return v>=0?'grn':'red'}function ps(v){return(v>=0?'+$':'-$')+Math.abs(v).toFixed(2)}
+
 function fetchData(){fetch("/api/dashboard").then(r=>r.json()).then(d=>{
 $("av").textContent="$"+d.account_value.toLocaleString(undefined,{minimumFractionDigits:2});
 var dp=$("dp");dp.textContent=ps(d.daily_pnl);dp.className="stat-v "+pc(d.daily_pnl);
@@ -152,26 +346,61 @@ $("wr").textContent=d.wins+d.losses>0?d.win_rate+"%":"--";$("sc").textContent=d.
 var vp=$("vix-pill");vp.textContent="VIX "+(d.vix||0).toFixed(1);vp.style.background=d.vix>30?"rgba(255,23,68,0.15)":d.vix>20?"rgba(255,171,0,0.15)":"rgba(0,230,118,0.15)";vp.style.color=d.vix>30?"var(--r)":d.vix>20?"var(--a)":"var(--g)";
 var ab=$("ab");ab.className="ap-btn "+(d.autopilot?"on":"off");ab.textContent="AP "+(d.autopilot?"ON":"OFF");
 if(d.theme=='light'&&!document.body.classList.contains('light'))document.body.classList.add('light');
+/* Warnings */
 var wb=$("warn-bar");var warns=[];var ec=d.econ_calendar||{};if(ec.is_high_impact_today)warns.push("&#9888; HIGH IMPACT: "+(ec.high_impact_events||[]).join(", "));var ea=d.earnings||{};if((ea.blackout_symbols||[]).length>0)warns.push("&#128683; EARNINGS: "+(ea.blackout_symbols||[]).join(", "));if(warns.length){wb.innerHTML=warns.join(" | ");wb.style.display="block"}else{wb.style.display="none"}
+/* Greeks sidebar */
 var pg=d.portfolio_greeks||{};$("g-delta").textContent=(pg.delta||0).toFixed(1);$("g-gamma").textContent=(pg.gamma||0).toFixed(3);$("g-theta").textContent="$"+(pg.theta||0).toFixed(2);$("g-vega").textContent=(pg.vega||0).toFixed(2);
+/* Spreads */
 var cs=d.credit_spreads||[];$("cs-cnt").textContent=cs.length;if(!cs.length){$("cs-body").innerHTML='<div class="empty"><div class="ico">&#128200;</div>No open spreads</div>'}else{var h='<table><tr><th>Symbol</th><th>Strikes</th><th>Credit</th><th>P/L</th><th>DTE</th><th></th></tr>';cs.forEach(s=>{var pl=s.current_profit||0;h+='<tr><td><strong>'+s.symbol+'</strong></td><td>'+s.short_strike+'/'+s.long_strike+'</td><td>$'+s.credit+'</td><td class="'+pc(pl)+'">'+(pl>=0?'+':'')+pl.toFixed(2)+'</td><td>'+(s.current_dte||s.dte)+'</td><td><button class="act-btn" onclick="closePos(\''+s.order_id+'\',\'spread\')">Close</button></td></tr>'});$("cs-body").innerHTML=h+'</table>'}
+/* Directional */
 var dt=d.directional_trades||[];$("dir-cnt").textContent=dt.length;if(!dt.length){$("dir-body").innerHTML='<div class="empty"><div class="ico">&#9889;</div>No open trades</div>'}else{var h='<table><tr><th>Symbol</th><th>Setup</th><th>Entry</th><th>P/L</th><th>Tier</th><th></th></tr>';dt.forEach(t=>{var pl=t.pnl||0;h+='<tr><td><strong>'+t.symbol+'</strong></td><td>'+t.setup_type+'</td><td>$'+t.entry_price+'</td><td class="'+pc(pl)+'">'+ps(pl)+'</td><td>'+(t.tier_hit>0?"T"+t.tier_hit:"--")+'</td><td><button class="act-btn" onclick="closePos(\''+t.order_id+'\',\'directional\')">Close</button></td></tr>'});$("dir-body").innerHTML=h+'</table>'}
-var logs=d.activity_log||[];if(logs.length){var lh='';logs.forEach(l=>{lh+='<div class="log-i"><div class="log-d '+(l.type||'system')+'"></div><div><div class="log-t">'+l.message+'</div><div class="log-tm">'+l.time+'</div></div></div>'});$("al").innerHTML=lh}
-var sr=d.screener_results||{};$("scr-count").textContent=sr.symbols_scanned?sr.symbols_scanned+" scanned":"";var ssp=sr.spreads||[];$("scr-sp-cnt").textContent=ssp.length;if(ssp.length){var h='<table><tr><th>Symbol</th><th>Strikes</th><th>Credit</th><th>Prob$</th><th>Score</th><th>Sector</th></tr>';ssp.forEach(s=>{h+='<tr><td><strong>'+s.symbol+'</strong></td><td>'+(s.short_strike||'')+'/'+( s.long_strike||'')+'</td><td>$'+(s.credit||0)+'</td><td class="grn">'+(s.prob_profit||0)+'%</td><td class="amb">'+(s.score||0)+'</td><td>'+(s.sector||'')+'</td></tr>'});$("scr-spreads").innerHTML=h+'</table>'}
-var sdr=sr.directional||[];$("scr-dir-cnt").textContent=sdr.length;if(sdr.length){var h='<table><tr><th>Symbol</th><th>Setup</th><th>Dir</th><th>Chg</th><th>Score</th></tr>';sdr.forEach(s=>{h+='<tr><td><strong>'+s.symbol+'</strong></td><td>'+s.setup_type+'</td><td class="'+(s.direction==='call'?'grn':'red')+'">'+s.direction.toUpperCase()+'</td><td>'+(s.change_pct>=0?'+':'')+s.change_pct+'%</td><td class="amb">'+s.score+'</td></tr>'});$("scr-dir").innerHTML=h+'</table>'}
-$("gd-delta").textContent=(pg.delta||0).toFixed(1);$("gd-gamma").textContent=(pg.gamma||0).toFixed(3);$("gd-theta").textContent="$"+(pg.theta||0).toFixed(2);$("gd-vega").textContent=(pg.vega||0).toFixed(2);var gp=pg.positions||[];if(gp.length){var h='<table><tr><th>Symbol</th><th>Delta</th><th>Gamma</th><th>Theta</th><th>Vega</th></tr>';gp.forEach(p=>{h+='<tr><td><strong>'+p.symbol+'</strong></td><td>'+(p.net_delta||p.delta||0).toFixed(2)+'</td><td>'+(p.net_gamma||p.gamma||0).toFixed(4)+'</td><td class="grn">$'+(p.net_theta||p.theta||0).toFixed(2)+'</td><td>'+(p.net_vega||p.vega||0).toFixed(2)+'</td></tr>'});$("greeks-positions").innerHTML=h+'</table>'}
+/* Log */
+var logs=d.activity_log||[];if(logs.length){var lh='';logs.slice(0,30).forEach(l=>{lh+='<div class="log-i"><div class="log-d '+(l.type||'system')+'"></div><div><div class="log-t">'+l.message+'</div><div class="log-tm">'+l.time+'</div></div></div>'});$("al").innerHTML=lh}
+/* Screener */
+var sr=d.screener_results||{};$("scr-count").textContent=sr.symbols_scanned?sr.symbols_scanned+" scanned":"";var ssp=sr.spreads||[];$("scr-sp-cnt").textContent=ssp.length;if(ssp.length){var h='<table><tr><th>Symbol</th><th>Strikes</th><th>Credit</th><th>Prob</th><th>Score</th></tr>';ssp.forEach(s=>{h+='<tr><td><strong>'+s.symbol+'</strong></td><td>'+(s.short_strike||'')+'/'+( s.long_strike||'')+'</td><td>$'+(s.credit||0)+'</td><td class="grn">'+(s.prob_profit||0)+'%</td><td class="amb">'+(s.score||0)+'</td></tr>'});$("scr-spreads").innerHTML=h+'</table>'}
+var sdr=sr.directional||[];$("scr-dir-cnt").textContent=sdr.length;if(sdr.length){var h='<table><tr><th>Symbol</th><th>Setup</th><th>Dir</th><th>Score</th></tr>';sdr.forEach(s=>{h+='<tr><td><strong>'+s.symbol+'</strong></td><td>'+s.setup_type+'</td><td class="'+(s.direction==='call'?'grn':'red')+'">'+s.direction.toUpperCase()+'</td><td class="amb">'+s.score+'</td></tr>'});$("scr-dir").innerHTML=h+'</table>'}
+/* Greeks tab */
+$("gd-delta").textContent=(pg.delta||0).toFixed(1);$("gd-gamma").textContent=(pg.gamma||0).toFixed(3);$("gd-theta").textContent="$"+(pg.theta||0).toFixed(2);$("gd-vega").textContent=(pg.vega||0).toFixed(2);
+var gp=pg.positions||[];if(gp.length){var h='<table><tr><th>Symbol</th><th>Delta</th><th>Gamma</th><th>Theta</th><th>Vega</th></tr>';gp.forEach(p=>{h+='<tr><td><strong>'+p.symbol+'</strong></td><td>'+(p.net_delta||0).toFixed(2)+'</td><td>'+(p.net_gamma||0).toFixed(4)+'</td><td class="grn">$'+(p.net_theta||0).toFixed(2)+'</td><td>'+(p.net_vega||0).toFixed(2)+'</td></tr>'});$("greeks-positions").innerHTML=h+'</table>'}
+/* Analytics */
 var an=d.analytics||{};$("an-total").textContent=an.total_trades||0;$("an-wr").textContent=an.total_trades>0?an.win_rate+"%":"--";var apnl=an.total_pnl||0;$("an-pnl").textContent=ps(apnl);$("an-pnl").className="metric-v "+pc(apnl);$("an-sharpe").textContent=an.total_trades>0?an.sharpe_ratio:"--";$("an-pf").textContent=an.total_trades>0?an.profit_factor:"--";$("an-dd").textContent=an.max_drawdown_pct>0?an.max_drawdown_pct+"%":"--";$("an-aw").textContent=an.avg_win>0?"+$"+an.avg_win:"--";$("an-al").textContent=an.avg_loss>0?"-$"+an.avg_loss:"--";
 var mo=an.monthly||[];if(mo.length){var h='<table><tr><th>Month</th><th>Trades</th><th>WR</th><th>P&L</th></tr>';mo.forEach(m=>{h+='<tr><td>'+m.month+'</td><td>'+m.trades+'</td><td>'+m.win_rate+'%</td><td class="'+pc(m.pnl)+'">'+ps(m.pnl)+'</td></tr>'});$("an-monthly").innerHTML=h+'</table>'}
-var rt=an.recent_trades||[];if(rt.length){var h='<table><tr><th>Symbol</th><th>P&L</th><th>Reason</th><th>Date</th></tr>';rt.slice(-15).reverse().forEach(t=>{h+='<tr><td><strong>'+t.symbol+'</strong></td><td class="'+pc(t.pnl)+'">'+ps(t.pnl)+'</td><td>'+(t.close_reason||'-')+'</td><td>'+(t.closed_at||'').slice(0,10)+'</td></tr>'});$("an-trades").innerHTML=h+'</table>'}
+/* Heatmap */
 var hm=d.sector_heatmap||[];if(hm.length){var hmh='';hm.forEach(s=>{var c=s.change_pct>=1?'var(--g)':s.change_pct>=0?'rgba(0,230,118,0.5)':s.change_pct>=-1?'rgba(255,23,68,0.5)':'var(--r)';hmh+='<div class="hm-cell" style="background:'+c+'20;border:1px solid '+c+'40"><div class="hm-name">'+s.sector+'</div><div class="hm-val" style="color:'+c+'">'+(s.change_pct>=0?'+':'')+s.change_pct+'%</div></div>'});$("heatmap").innerHTML=hmh}
+/* Calendar */
 var ecal=d.econ_calendar||{};var nf=ecal.next_fomc;$("cal-fomc").textContent=nf?nf.days_until+"d":"--";var nc=ecal.next_cpi;$("cal-cpi").textContent=nc?nc.days_until+"d":"--";var nj=ecal.next_jobs;$("cal-jobs").textContent=nj?nj.days_until+"d":"--";var no2=ecal.next_opex;$("cal-opex").textContent=no2?no2.days_until+"d":"--";
 var upc=ecal.upcoming||[];if(upc.length){var ch='';upc.slice(0,15).forEach(e=>{var ic=e.impact=='HIGH'?'high':e.impact=='MEDIUM'?'medium':'info';ch+='<div class="cal-item"><div class="cal-dot '+ic+'"></div><div class="cal-info"><div class="cal-ev">'+e.event+'</div><div class="cal-dt">'+e.date+'</div></div><div class="cal-days">'+(e.days_until===0?'TODAY':e.days_until+'d')+'</div></div>'});$("cal-events").innerHTML=ch}
-var earn=d.earnings||{};var eu=earn.upcoming||[];$("earn-cnt").textContent=eu.length;if(eu.length){var eh='';eu.forEach(e=>{eh+='<div class="cal-item"><div class="cal-dot high"></div><div class="cal-info"><div class="cal-ev">'+e.symbol+' <span style="color:var(--txt3)">'+e.sector+'</span></div><div class="cal-dt">'+e.date+'</div></div><div class="cal-days">'+(e.days_until===0?'TODAY':e.days_until+'d')+'</div></div>'});$("earn-list").innerHTML=eh}
+var earn=d.earnings||{};var eu=earn.upcoming||[];$("earn-cnt").textContent=eu.length;if(eu.length){var eh='';eu.forEach(e=>{eh+='<div class="cal-item"><div class="cal-dot high"></div><div class="cal-info"><div class="cal-ev">'+e.symbol+'</div><div class="cal-dt">'+e.date+'</div></div><div class="cal-days">'+e.days_until+'d</div></div>'});$("earn-list").innerHTML=eh}
 }).catch(e=>console.log("err:",e))}
-function fetchRisk(){fetch("/api/risk").then(r=>r.json()).then(d=>{var sc=d.scenarios||[];if(sc.length){var h='<table><tr><th>Scenario</th><th>Est P&L</th><th>%</th><th>Status</th></tr>';sc.forEach(s=>{h+='<tr><td>'+s.scenario+'</td><td class="'+pc(s.estimated_pnl)+'">'+ps(s.estimated_pnl)+'</td><td>'+s.pnl_pct+'%</td><td class="'+(s.surviving?'grn':'red')+'">'+(s.surviving?'SAFE':'DANGER')+'</td></tr>'});$("stress-body").innerHTML=h+'</table>'}var rm='<div class="metric"><div class="metric-l">Total Risk</div><div class="metric-v red">$'+d.total_risk+'</div></div><div class="metric"><div class="metric-l">Risk %</div><div class="metric-v amb">'+d.risk_pct_of_account+'%</div></div><div class="metric"><div class="metric-l">Daily Theta</div><div class="metric-v grn">$'+d.daily_theta_income+'</div></div><div class="metric"><div class="metric-l">Positions</div><div class="metric-v blu">'+d.total_positions+'</div></div>';$("risk-metrics").innerHTML=rm}).catch(()=>{})}
+
+/* === SHARE CARDS (auto-generated from trade history) === */
+function fetchShareCards(){fetch("/api/trade-history").then(r=>r.json()).then(d=>{
+var trades=d.trades||[];if(!trades.length){$("share-cards").innerHTML='<div class="empty">No closed trades yet. Share cards will auto-generate here after each trade closes.</div>';return}
+var h='';trades.slice(-15).reverse().forEach(function(t,i){
+var isWin=t.pnl>=0;var col=isWin?'var(--g)':'var(--r)';var dir=t.direction||t.type||'spread';var verse=verses[i%verses.length];
+var pctReturn=t.entry_price>0?((t.pnl/(t.entry_price*100))*100).toFixed(1):'0';
+var cardText='PROJECT HOPE v3.0\n'+t.symbol+' | '+(dir.toUpperCase())+' | '+(t.setup_type||t.type||'')+'\n'+(isWin?'WIN':'LOSS')+': '+(isWin?'+':'')+ps(t.pnl)+' ('+pctReturn+'%)\nEntry: $'+(t.entry_price||0)+' → Exit: $'+(t.exit_price||0)+'\n'+verse;
+h+='<div class="share-card'+(isWin?'':' loss')+'">';
+h+='<div class="sc-head"><div><span class="sc-sym">'+t.symbol+'</span><span class="sc-tag" style="background:'+(isWin?'rgba(0,230,118,0.15)':'rgba(255,23,68,0.15)')+';color:'+col+'">'+dir.toUpperCase()+'</span></div><div style="text-align:right;font-size:10px;color:var(--txt3)">'+(t.closed_at||'').slice(0,10)+'<br>'+(t.setup_type||t.type||'')+'</div></div>';
+h+='<div class="sc-pnl" style="color:'+col+'">'+(isWin?'+':'')+ps(t.pnl)+'</div>';
+h+='<div style="text-align:center;font-size:13px;color:'+col+';opacity:0.7;margin-bottom:8px">'+pctReturn+'%</div>';
+h+='<div class="sc-stats"><div class="sc-stat"><div class="sc-stat-l">Entry</div><div class="sc-stat-v">$'+(t.entry_price||0)+'</div></div><div class="sc-stat"><div class="sc-stat-l">Exit</div><div class="sc-stat-v">$'+(t.exit_price||0)+'</div></div><div class="sc-stat"><div class="sc-stat-l">Reason</div><div class="sc-stat-v" style="font-size:11px">'+(t.close_reason||'-')+'</div></div></div>';
+h+='<div class="sc-verse">&#128214; '+verse+'</div>';
+h+='<div class="sc-foot"><div class="sc-brand">PROJECT <span>HOPE</span></div><div class="sc-ver">AUTOPILOT v3.0</div></div>';
+h+='<button class="copy-btn" onclick="copyCard(this,`'+cardText.replace(/`/g,"'").replace(/\n/g,'\\n')+'`)">&#128203; Copy to Share</button>';
+h+='</div>'});
+$("share-cards").innerHTML=h}).catch(()=>{})}
+
+function copyCard(btn,text){navigator.clipboard.writeText(text.replace(/\\n/g,'\n')).then(()=>{btn.textContent='Copied!';btn.style.background='rgba(0,230,118,0.3)';setTimeout(()=>{btn.textContent='📋 Copy to Share';btn.style.background='rgba(0,230,118,0.1)'},2000)})}
+
+/* === RISK === */
+function fetchRisk(){fetch("/api/risk").then(r=>r.json()).then(d=>{var sc=d.scenarios||[];if(sc.length){var h='<table><tr><th>Scenario</th><th>Est P&L</th><th>%</th><th>Status</th></tr>';sc.forEach(s=>{h+='<tr><td>'+s.scenario+'</td><td class="'+pc(s.estimated_pnl)+'">'+ps(s.estimated_pnl)+'</td><td>'+s.pnl_pct+'%</td><td class="'+(s.surviving?'grn':'red')+'">'+(s.surviving?'SAFE':'RISK')+'</td></tr>'});$("stress-body").innerHTML=h+'</table>'}$("risk-metrics").innerHTML='<div class="metric"><div class="metric-l">Total Risk</div><div class="metric-v red">$'+d.total_risk+'</div></div><div class="metric"><div class="metric-l">Risk %</div><div class="metric-v amb">'+d.risk_pct_of_account+'%</div></div><div class="metric"><div class="metric-l">Daily Theta</div><div class="metric-v grn">$'+d.daily_theta_income+'</div></div><div class="metric"><div class="metric-l">Positions</div><div class="metric-v blu">'+d.total_positions+'</div></div>'}).catch(()=>{})}
+
+/* === JOURNAL === */
 function fetchJournal(){fetch("/api/journal").then(r=>r.json()).then(d=>{var entries=d.entries||[];if(entries.length){var h='';entries.forEach(e=>{h+='<div class="jnl-entry"><div class="jnl-head"><div class="jnl-sym">'+(e.symbol||e.type)+' <span class="tag tag-'+(e.type=='trade'?'cs':'dir')+'">'+e.type+'</span>'+(e.pnl?' <span class="'+pc(e.pnl)+'">'+ps(e.pnl)+'</span>':'')+'</div><div class="jnl-dt">'+e.date+'</div></div><div class="jnl-body">'+e.notes+'</div></div>'});$("jnl-entries").innerHTML=h}}).catch(()=>{})}
-setInterval(fetchJournal,10000);setTimeout(fetchJournal,3000);
 function addJournal(){var d={symbol:$("jnl-sym").value,type:$("jnl-type").value,emotion:$("jnl-emo").value,notes:$("jnl-notes").value};fetch("/api/journal/add",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(d)}).then(()=>{$("jnl-notes").value='';$("jnl-sym").value='';fetchJournal()})}
+
+/* === BACKTEST === */
 function runBacktest(){var sym=$("bt-sym").value,days=parseInt($("bt-days").value);var btn=$("bt-run");btn.disabled=true;btn.textContent="Running...";$("bt-results").innerHTML='<div class="empty">Running '+sym+'...</div>';fetch("/api/backtest",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({symbol:sym,days:days})}).then(r=>r.json()).then(()=>{var poll=setInterval(()=>{fetch("/api/backtest/results").then(r=>r.json()).then(d=>{if(!d.running&&d.results){clearInterval(poll);btn.disabled=false;btn.textContent="Run Backtest";renderBT(d.results)}})},2000)}).catch(()=>{btn.disabled=false;btn.textContent="Run Backtest"})}
-function renderBT(r){if(r.error){$("bt-results").innerHTML='<div class="empty red">'+r.error+'</div>';return}var h='<div class="metrics-grid"><div class="metric"><div class="metric-l">Win Rate</div><div class="metric-v amb">'+r.win_rate+'%</div></div><div class="metric"><div class="metric-l">Total P&L</div><div class="metric-v '+pc(r.total_pnl)+'">'+ps(r.total_pnl)+'</div></div><div class="metric"><div class="metric-l">Sharpe</div><div class="metric-v">'+r.sharpe+'</div></div><div class="metric"><div class="metric-l">Drawdown</div><div class="metric-v red">'+r.max_dd+'%</div></div><div class="metric"><div class="metric-l">Profit Factor</div><div class="metric-v">'+r.profit_factor+'</div></div><div class="metric"><div class="metric-l">Trades</div><div class="metric-v">'+r.total_trades+'</div></div><div class="metric"><div class="metric-l">Balance</div><div class="metric-v grn">$'+r.final_balance.toLocaleString()+'</div></div><div class="metric"><div class="metric-l">Return</div><div class="metric-v '+pc(r.total_return)+'">'+r.total_return+'%</div></div></div>';if(r.monthly&&r.monthly.length){h+='<div class="card"><div class="card-h"><div class="card-t">Monthly</div></div><div class="card-body" style="padding:12px">';var mx=Math.max(...r.monthly.map(m=>Math.abs(m.pnl)),1);r.monthly.forEach(m=>{var p=Math.abs(m.pnl)/mx*100;h+='<div class="bar-row"><div class="bar-label">'+m.month.slice(5)+'</div><div class="bar-track"><div class="bar-fill" style="width:'+p+'%;background:'+(m.pnl>=0?'var(--g)':'var(--r)')+'"></div></div><div class="bar-val '+pc(m.pnl)+'">'+(m.pnl>=0?'+':'-')+'$'+Math.abs(m.pnl).toFixed(0)+'</div></div>'});h+='</div></div>'}$("bt-results").innerHTML=h}
+function renderBT(r){if(r.error){$("bt-results").innerHTML='<div class="empty red">'+r.error+'</div>';return}var h='<div class="metrics-grid"><div class="metric"><div class="metric-l">Win Rate</div><div class="metric-v amb">'+r.win_rate+'%</div></div><div class="metric"><div class="metric-l">Total P&L</div><div class="metric-v '+pc(r.total_pnl)+'">'+ps(r.total_pnl)+'</div></div><div class="metric"><div class="metric-l">Sharpe</div><div class="metric-v">'+r.sharpe+'</div></div><div class="metric"><div class="metric-l">Drawdown</div><div class="metric-v red">'+r.max_dd+'%</div></div><div class="metric"><div class="metric-l">Profit Factor</div><div class="metric-v">'+r.profit_factor+'</div></div><div class="metric"><div class="metric-l">Trades</div><div class="metric-v">'+r.total_trades+'</div></div><div class="metric"><div class="metric-l">Balance</div><div class="metric-v grn">$'+r.final_balance.toLocaleString()+'</div></div><div class="metric"><div class="metric-l">Return</div><div class="metric-v '+pc(r.total_return)+'">'+r.total_return+'%</div></div></div>';if(r.monthly&&r.monthly.length){h+='<div class="card"><div class="card-h"><div class="card-t">Monthly</div></div><div class="card-body" style="padding:12px">';var mx=Math.max(...r.monthly.map(m=>Math.abs(m.pnl)),1);r.monthly.forEach(m=>{var p=Math.abs(m.pnl)/mx*100;h+='<div class="bar-row"><div class="bar-label">'+m.month.slice(5)+'</div><div class="bar-track"><div class="bar-fill" style="width:'+p+'%;background:'+(m.pnl>=0?'var(--g)':'var(--r)')+'"></div></div><div class="bar-val '+pc(m.pnl)+'">'+ps(m.pnl)+'</div></div>'});h+='</div></div>'}$("bt-results").innerHTML=h}
 </script></body></html>
