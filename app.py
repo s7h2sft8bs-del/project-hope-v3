@@ -1,5 +1,5 @@
-"""PROJECT HOPE v3.0 - Web Server with Persistent Storage"""
-from flask import Flask, send_file, jsonify, request
+"""PROJECT HOPE v3.0 FINAL - Web Server"""
+from flask import Flask, send_file, jsonify, request, Response
 from engine import TradingEngine
 import threading, os
 
@@ -15,6 +15,12 @@ def dashboard(): return jsonify(engine.get_dashboard_data())
 
 @app.route('/api/autopilot', methods=['POST'])
 def toggle_ap(): return jsonify({'autopilot': engine.toggle_autopilot()})
+
+@app.route('/api/theme', methods=['POST'])
+def set_theme():
+    d = request.json or {}
+    engine.set_theme(d.get('theme', 'dark'))
+    return jsonify({'theme': engine.state['theme']})
 
 @app.route('/api/close', methods=['POST'])
 def close_pos():
@@ -42,14 +48,15 @@ def close_all():
 @app.route('/api/reset-breaker', methods=['POST'])
 def reset_breaker():
     engine.state['consecutive_losses'] = 0
-    engine._log('system', 'Loss breaker reset'); return jsonify({'success': True})
+    engine._log('system', 'Loss breaker reset')
+    return jsonify({'success': True})
 
 @app.route('/api/backtest', methods=['POST'])
 def run_backtest():
     d = request.json or {}
     symbol = d.get('symbol', 'SPY')
     days = min(d.get('days', 365), 730)
-    if engine.state.get('backtest_running'): return jsonify({'error': 'Backtest already running'})
+    if engine.state.get('backtest_running'): return jsonify({'error': 'Already running'})
     threading.Thread(target=engine.run_backtest, args=(symbol, days), daemon=True).start()
     return jsonify({'status': 'started', 'symbol': symbol, 'days': days})
 
@@ -72,8 +79,7 @@ def storage_stats(): return jsonify(engine.storage.get_storage_stats())
 @app.route('/api/storage/save', methods=['POST'])
 def force_save():
     engine.storage.save_state(engine.state)
-    engine.storage.save_analytics(engine.analytics.get_full_report())
-    return jsonify({'saved': True, 'stats': engine.storage.get_storage_stats()})
+    return jsonify({'saved': True})
 
 @app.route('/api/trade-history')
 def trade_history():
@@ -82,6 +88,60 @@ def trade_history():
 
 @app.route('/api/daily-logs')
 def daily_logs(): return jsonify(engine.storage.load_daily_logs())
+
+# === NEW ENDPOINTS ===
+
+@app.route('/api/earnings')
+def earnings_data(): return jsonify(engine.earnings.get_data())
+
+@app.route('/api/earnings/add', methods=['POST'])
+def add_earnings():
+    d = request.json or {}
+    engine.earnings.add_manual_earnings(d.get('symbol',''), d.get('date',''), d.get('timing',''))
+    return jsonify({'success': True})
+
+@app.route('/api/iv-rank')
+def iv_rank_data(): return jsonify(engine.iv_rank.get_data())
+
+@app.route('/api/iv-rank/top')
+def iv_rank_top(): return jsonify(engine.iv_rank.get_top_iv_symbols(20))
+
+@app.route('/api/risk')
+def risk_data(): return jsonify(engine.risk.stress_test(engine.state))
+
+@app.route('/api/risk/correlations')
+def correlations():
+    open_syms = [s['symbol'] for s in engine.state['credit_spreads'] if s['status'] in ['open','pending']]
+    open_syms += [t['symbol'] for t in engine.state['directional_trades'] if t['status'] in ['open','pending']]
+    if not open_syms: open_syms = ['SPY','QQQ','AAPL','MSFT','NVDA']
+    return jsonify(engine.risk.calculate_correlations(list(set(open_syms))))
+
+@app.route('/api/risk/heatmap')
+def heatmap(): return jsonify(engine.risk.get_sector_heatmap())
+
+@app.route('/api/journal')
+def journal_data(): return jsonify(engine.journal.get_data())
+
+@app.route('/api/journal/add', methods=['POST'])
+def journal_add():
+    d = request.json or {}
+    entry = engine.journal.add_entry(d)
+    return jsonify(entry)
+
+@app.route('/api/journal/update', methods=['POST'])
+def journal_update():
+    d = request.json or {}
+    entry = engine.journal.update_entry(d.get('id'), d)
+    return jsonify(entry or {'error': 'Not found'})
+
+@app.route('/api/calendar')
+def calendar_data(): return jsonify(engine.econ_cal.get_data())
+
+@app.route('/api/export/csv')
+def export_csv():
+    csv_data = engine.export_trades_csv()
+    return Response(csv_data, mimetype='text/csv',
+                    headers={'Content-Disposition': 'attachment;filename=project_hope_trades.csv'})
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))

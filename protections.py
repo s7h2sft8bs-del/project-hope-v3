@@ -81,7 +81,33 @@ class Protections:
         return True, ""
 
     def _sector_limit(self, tt): return True, ""
-    def _no_dup(self, tt): return True, ""
+
+    def check_sector_limit(self, symbol):
+        """Public method - check sector limit AND no duplicate symbols"""
+        # No duplicate symbol check
+        for s in self.state.get('credit_spreads', []):
+            if s['status'] in ['open', 'pending'] and s['symbol'] == symbol:
+                return False, f"Already have open spread on {symbol}"
+        for t in self.state.get('directional_trades', []):
+            if t['status'] in ['open', 'pending'] and t['symbol'] == symbol:
+                return False, f"Already have open trade on {symbol}"
+
+        # Sector concentration check
+        sector = config.SECTOR_MAP.get(symbol, 'Other')
+        count = 0
+        for s in self.state.get('credit_spreads', []):
+            if s['status'] in ['open', 'pending'] and config.SECTOR_MAP.get(s['symbol'], '') == sector:
+                count += 1
+        for t in self.state.get('directional_trades', []):
+            if t['status'] in ['open', 'pending'] and config.SECTOR_MAP.get(t['symbol'], '') == sector:
+                count += 1
+        if count >= config.MAX_SAME_SECTOR:
+            return False, f"Max {config.MAX_SAME_SECTOR} in {sector}"
+        return True, ""
+    def _no_dup(self, tt):
+        """Prevent entering the same symbol that's already open"""
+        # Actual check happens in check_sector_limit per-symbol
+        return True, ""
     def _vol_ok(self, tt): return True, ""
     def _spread_ok(self, tt): return True, ""
     def _sl_active(self, tt): return True, ""

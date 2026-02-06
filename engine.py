@@ -1,5 +1,5 @@
-"""PROJECT HOPE v3.0 - Trading Engine with Persistent Storage"""
-import threading, time
+"""PROJECT HOPE v3.0 FINAL - Trading Engine - All Systems Integrated"""
+import threading, time, csv, io
 from datetime import datetime, date
 from tradier_api import TradierAPI
 from credit_spread_scanner import CreditSpreadScanner
@@ -12,6 +12,11 @@ from greeks import GreeksDashboard
 from screener import OptionsScreener
 from backtester import Backtester
 from storage import Storage, AutoSaver
+from earnings import EarningsCalendar
+from iv_rank import IVRankCalculator
+from risk_analyzer import RiskAnalyzer
+from journal import TradeJournal
+from economic_calendar import EconomicCalendar
 import config
 
 class TradingEngine:
@@ -31,40 +36,38 @@ class TradingEngine:
             'portfolio_greeks':{'delta':0,'gamma':0,'theta':0,'vega':0,'positions':[]},
             'screener_results':{'spreads':[],'directional':[],'scan_time':None,'symbols_scanned':0},
             'backtest_results':None,'backtest_running':False,
+            'theme':'dark',
         }
 
         # === RESTORE SAVED STATE ===
         saved = self.storage.load_state()
         if saved:
-            self.state['credit_spreads'] = saved.get('credit_spreads', [])
-            self.state['directional_trades'] = saved.get('directional_trades', [])
-            self.state['wins'] = saved.get('wins', 0)
-            self.state['losses'] = saved.get('losses', 0)
-            self.state['consecutive_losses'] = saved.get('consecutive_losses', 0)
-            self.state['total_pnl'] = saved.get('total_pnl', 0)
-            self.state['daily_pnl'] = saved.get('daily_pnl', 0)
-            self.state['cs_trades_today'] = saved.get('cs_trades_today', 0)
-            self.state['dir_trades_today'] = saved.get('dir_trades_today', 0)
-            # Reset daily counters if it's a new day
+            for key in ['credit_spreads','directional_trades','wins','losses',
+                        'consecutive_losses','total_pnl','daily_pnl',
+                        'cs_trades_today','dir_trades_today','theme']:
+                if key in saved: self.state[key] = saved[key]
             if saved.get('today','') != str(date.today()):
-                self.state['cs_trades_today'] = 0
-                self.state['dir_trades_today'] = 0
-                self.state['daily_pnl'] = 0
-                self.state['consecutive_losses'] = 0
+                self.state.update({'cs_trades_today':0,'dir_trades_today':0,'daily_pnl':0,'consecutive_losses':0})
             self._log('system', f"RESTORED: {self.state['wins']}W/{self.state['losses']}L | P&L: ${self.state['total_pnl']:.2f}")
         else:
             self._log('system', 'Fresh start - no saved state')
 
+        # === INIT ALL MODULES ===
         self.spread_scanner = CreditSpreadScanner(self.api, self.state)
         self.directional_scanner = DirectionalScanner(self.api, self.state)
-        self.position_manager = PositionManager(self.api, self.state, self.alerts)
         self.protections = Protections(self.api, self.state)
-        self.analytics = Analytics(self.storage)  # Pass storage for persistent trade history
+        self.analytics = Analytics(self.storage)
+        self.position_manager = PositionManager(self.api, self.state, self.alerts, self.analytics)
         self.greeks_dash = GreeksDashboard(self.api)
         self.screener = OptionsScreener(self.api)
         self.backtester = Backtester(self.api)
         self.autosaver = AutoSaver(self.storage, self, interval=30)
-        self._log('system', f'Engine initialized. {len(config.WATCHLIST)} symbols. {len(self.analytics.trade_history)} historical trades loaded.')
+        self.earnings = EarningsCalendar(self.api, self.storage)
+        self.iv_rank = IVRankCalculator(self.api)
+        self.risk = RiskAnalyzer(self.api)
+        self.journal = TradeJournal(self.storage)
+        self.econ_cal = EconomicCalendar()
+        self._log('system', f'Engine initialized. {len(config.WATCHLIST)} symbols. {len(self.analytics.trade_history)} trades loaded.')
 
     def start(self):
         self.state['engine_running'] = True
@@ -73,16 +76,24 @@ class TradingEngine:
             self.state['connected'] = True; self.state['balance'] = balance
             self._log('system', f"Connected. Balance: ${balance['total_value']:,.2f}")
         else:
-            self._log('alert', 'Failed to connect to Tradier API')
+            self._log('alert', 'API connection - using virtual balance')
 
-        # Start auto-saver (saves state every 30 seconds)
         self.autosaver.start()
+        self.earnings.start_refresh_loop()
+        self.iv_rank.start_refresh_loop()
 
         for fn in [self._position_loop, self._spread_loop, self._directional_loop,
                    self._account_loop, self._clock_loop, self._reset_loop,
                    self._greeks_loop, self._screener_loop]:
             threading.Thread(target=fn, daemon=True).start()
-        self._log('system', 'All threads started + auto-save active')
+
+        # Check economic calendar on start
+        is_high, events = self.econ_cal.is_high_impact_day()
+        if is_high:
+            names = ', '.join(e['event'] for e in events)
+            self._log('alert', f"HIGH IMPACT DAY: {names}")
+
+        self._log('system', 'All 10 threads started + earnings + IV rank active')
 
     def _position_loop(self):
         while self.state['engine_running']:
@@ -90,6 +101,8 @@ class TradingEngine:
                 if self.state['autopilot'] and self.state['market_open']:
                     self.position_manager.check_all_positions()
                     self._sync_orders()
+                    # Auto-journal closed trades
+                    self._auto_journal_closed()
             except Exception as e: print(f"[POS ERR] {e}")
             time.sleep(config.POSITION_CHECK_INTERVAL)
 
@@ -97,20 +110,31 @@ class TradingEngine:
         while self.state['engine_running']:
             try:
                 if self.state['autopilot'] and self.state['market_open']:
-                    passed, _ = self.protections.check_all('spread')
+                    passed, reason = self.protections.check_all('spread')
                     if passed:
                         opps = self.spread_scanner.scan()
                         self.state['spread_opportunities'] = opps[:5]
                         if opps:
                             best = opps[0]
-                            sok, _ = self.protections.check_sector_limit(best['symbol'])
-                            if sok:
-                                result = self.spread_scanner.execute_spread(best)
-                                if result:
-                                    self.state['last_trade_time'] = datetime.now()
-                                    self._log('entry', f"SPREAD: {best['symbol']} ${best['credit']} credit")
-                                    self.alerts.send(f"NEW SPREAD: {best['symbol']}\nCredit: ${best['credit']}")
-                                    self.storage.save_state(self.state)  # Save immediately after trade
+                            # Earnings blackout check
+                            blk, blk_msg = self.earnings.is_earnings_blackout(best['symbol'])
+                            if blk:
+                                self._log('alert', f"BLOCKED: {blk_msg}")
+                            else:
+                                # Sector + duplicate check
+                                sok, _ = self.protections.check_sector_limit(best['symbol'])
+                                if sok:
+                                    # IV rank check
+                                    iv_ok, iv_msg = self.iv_rank.is_iv_favorable(best['symbol'], 'spread')
+                                    if iv_ok:
+                                        result = self.spread_scanner.execute_spread(best)
+                                        if result:
+                                            self.state['last_trade_time'] = datetime.now()
+                                            self._log('entry', f"SPREAD: {best['symbol']} ${best['credit']} credit")
+                                            self.alerts.send(f"NEW SPREAD: {best['symbol']}\nCredit: ${best['credit']}")
+                                            self.storage.save_state(self.state)
+                                    else:
+                                        self._log('system', f"IV skip: {iv_msg}")
             except Exception as e: print(f"[SPREAD ERR] {e}")
             time.sleep(config.SPREAD_SCAN_INTERVAL)
 
@@ -118,20 +142,29 @@ class TradingEngine:
         while self.state['engine_running']:
             try:
                 if self.state['autopilot'] and self.state['market_open']:
+                    # Skip directional on high-impact days
+                    is_high, _ = self.econ_cal.is_high_impact_day()
+                    if is_high:
+                        time.sleep(config.DIRECTIONAL_SCAN_INTERVAL)
+                        continue
                     passed, _ = self.protections.check_all('directional')
                     if passed:
                         opps = self.directional_scanner.scan()
                         self.state['directional_opportunities'] = opps[:5]
                         if opps and opps[0]['score'] >= 70:
                             best = opps[0]
-                            sok, _ = self.protections.check_sector_limit(best['symbol'])
-                            if sok:
-                                result = self.directional_scanner.execute_trade(best)
-                                if result:
-                                    self.state['last_trade_time'] = datetime.now()
-                                    self._log('entry', f"TRADE: {best['symbol']} {best['setup_type']} Score:{best['score']}")
-                                    self.alerts.send(f"NEW: {best['symbol']} {best['setup_type']}")
-                                    self.storage.save_state(self.state)  # Save immediately
+                            blk, _ = self.earnings.is_earnings_blackout(best['symbol'])
+                            if not blk:
+                                sok, _ = self.protections.check_sector_limit(best['symbol'])
+                                if sok:
+                                    iv_ok, _ = self.iv_rank.is_iv_favorable(best['symbol'], 'directional')
+                                    if iv_ok:
+                                        result = self.directional_scanner.execute_trade(best)
+                                        if result:
+                                            self.state['last_trade_time'] = datetime.now()
+                                            self._log('entry', f"TRADE: {best['symbol']} {best['setup_type']} Score:{best['score']}")
+                                            self.alerts.send(f"NEW: {best['symbol']} {best['setup_type']}")
+                                            self.storage.save_state(self.state)
             except Exception as e: print(f"[DIR ERR] {e}")
             time.sleep(config.DIRECTIONAL_SCAN_INTERVAL)
 
@@ -174,7 +207,9 @@ class TradingEngine:
     def _clock_loop(self):
         while self.state['engine_running']:
             try:
-                now = self.protections._get_et_now()
+                try:
+                    import pytz; now = datetime.now(pytz.timezone('US/Eastern'))
+                except: now = datetime.now()
                 mins = now.hour*60+now.minute; wd = now.weekday()
                 self.state['market_open'] = wd<5 and 570<=mins<=960
                 self.state['in_window'] = (570<=mins<=630) or (900<=mins<=955)
@@ -187,12 +222,10 @@ class TradingEngine:
             try:
                 today = str(date.today())
                 if today != self.state['today']:
-                    # Save end-of-day summary before reset
                     self.storage.update_daily_summary(
                         self.state['today'],
                         self.state['cs_trades_today'] + self.state['dir_trades_today'],
-                        self.state['wins'], self.state['losses'], self.state['daily_pnl']
-                    )
+                        self.state['wins'], self.state['losses'], self.state['daily_pnl'])
                     self.state.update({'today':today,'cs_trades_today':0,'dir_trades_today':0,
                                        'daily_pnl':0,'consecutive_losses':0})
                     self.state.pop('eod_closed_today', None)
@@ -218,6 +251,17 @@ class TradingEngine:
                     elif om[oid] in ['rejected','canceled']: t['status']='rejected'
         except: pass
 
+    def _auto_journal_closed(self):
+        """Auto-create journal entries for newly closed trades"""
+        for s in self.state['credit_spreads']:
+            if s.get('status') == 'closed' and not s.get('journaled'):
+                self.journal.add_auto_entry(s, s.get('close_reason', 'unknown'))
+                s['journaled'] = True
+        for t in self.state['directional_trades']:
+            if t.get('status') == 'closed' and not t.get('journaled'):
+                self.journal.add_auto_entry(t, t.get('close_reason', 'unknown'))
+                t['journaled'] = True
+
     def _calc_pnl(self):
         total = sum(s.get('current_profit',0)*s['contracts']*100 for s in self.state['credit_spreads'] if s.get('current_profit'))
         total += sum(t.get('pnl',0) for t in self.state['directional_trades'] if t.get('pnl'))
@@ -227,9 +271,9 @@ class TradingEngine:
         if not self.state.get('eod_closed_today'):
             for t in self.state['directional_trades']:
                 if t['status']=='open' and not t.get('manual_override'):
-                    self.position_manager._close_directional(t, t['current_qty'], "EOD AUTO-CLOSE")
+                    self.position_manager._close_dir(t, t['current_qty'], "EOD AUTO-CLOSE")
             self.state['eod_closed_today'] = True
-            self.storage.save_state(self.state)  # Save after EOD close
+            self.storage.save_state(self.state)
 
     def toggle_autopilot(self):
         self.state['autopilot'] = not self.state['autopilot']
@@ -238,27 +282,52 @@ class TradingEngine:
         self.storage.save_state(self.state)
         return self.state['autopilot']
 
+    def set_theme(self, theme):
+        self.state['theme'] = theme
+        self.storage.save_state(self.state)
+
     def run_backtest(self, symbol='SPY', days=365):
         self.state['backtest_running'] = True
         try:
             r = self.backtester.run_credit_spread_backtest(symbol, days)
             self.state['backtest_results'] = r
             if 'error' not in r:
-                self.storage.save_backtest(r)  # Save to disk
-                self._log('system', f"Backtest: {r['win_rate']}% WR | ${r['total_pnl']} | Sharpe {r['sharpe_ratio']}")
+                self.storage.save_backtest(r)
+                self._log('system', f"Backtest: {r['win_rate']}% WR | ${r['total_pnl']} | Sharpe {r['sharpe']}")
         except Exception as e:
             self.state['backtest_results'] = {'error': str(e)}
         self.state['backtest_running'] = False
         return self.state['backtest_results']
 
+    def export_trades_csv(self):
+        """Export all trades to CSV string"""
+        history = self.storage.load_trade_history()
+        if not history: return ""
+        output = io.StringIO()
+        writer = csv.writer(output)
+        writer.writerow(['Date','Symbol','Type','Direction','Entry','Exit','P&L','Reason','Setup'])
+        for t in history:
+            writer.writerow([
+                t.get('closed_at','')[:10], t.get('symbol',''), t.get('type',''),
+                t.get('direction',''), t.get('entry_price',''), t.get('exit_price',''),
+                t.get('pnl',0), t.get('close_reason',''), t.get('setup_type',''),
+            ])
+        return output.getvalue()
+
     def get_dashboard_data(self):
-        vv = config.VIRTUAL_ACCOUNT_SIZE + self.state.get('daily_pnl', 0)
+        vv = config.VIRTUAL_ACCOUNT_SIZE + self.state.get('total_pnl', 0)
         os_ = [s for s in self.state['credit_spreads'] if s['status'] in ['open','pending']]
         od = [t for t in self.state['directional_trades'] if t['status'] in ['open','pending']]
         w=self.state['wins'];l=self.state['losses']
         wr=round((w/(w+l))*100,1) if (w+l)>0 else 0
         used=sum((config.CS_SPREAD_WIDTH-s['credit'])*s['contracts']*100 for s in os_)
         used+=sum(t['entry_price']*t['current_qty']*100 for t in od)
+        
+        # Sector heatmap (cached, only refresh occasionally)
+        heatmap = []
+        try: heatmap = self.risk.get_sector_heatmap()
+        except: pass
+
         return {
             'autopilot':self.state['autopilot'],'connected':self.state['connected'],
             'market_open':self.state['market_open'],'in_window':self.state['in_window'],
@@ -272,8 +341,6 @@ class TradingEngine:
             'activity_log':self.state['activity_log'][:50],
             'cs_trades_today':self.state['cs_trades_today'],'dir_trades_today':self.state['dir_trades_today'],
             'consecutive_losses':self.state.get('consecutive_losses',0),
-            'cs_allocation':config.VIRTUAL_ACCOUNT_SIZE*config.CREDIT_SPREAD_ALLOCATION,
-            'dir_allocation':config.VIRTUAL_ACCOUNT_SIZE*config.DIRECTIONAL_ALLOCATION,
             'portfolio_greeks':self.state.get('portfolio_greeks',{}),
             'screener_results':self.state.get('screener_results',{}),
             'backtest_results':self.state.get('backtest_results'),
@@ -281,6 +348,12 @@ class TradingEngine:
             'analytics':self.analytics.get_full_report(),
             'watchlist_count':len(config.WATCHLIST),
             'storage_stats':self.storage.get_storage_stats(),
+            'earnings':self.earnings.get_data(),
+            'iv_rank':self.iv_rank.get_data(),
+            'econ_calendar':self.econ_cal.get_data(),
+            'journal_stats':self.journal.get_stats(),
+            'sector_heatmap':heatmap,
+            'theme':self.state.get('theme','dark'),
         }
 
     def _log(self, lt, msg):

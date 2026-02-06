@@ -125,3 +125,33 @@ class TradierAPI:
                 if min_dte <= dte <= max_dte: return exp_str, dte
             except: continue
         return None, None
+
+    def get_quotes_batch(self, symbols):
+        """Get quotes for a list of symbols in one call"""
+        if not symbols: return {}
+        result = {}
+        # Tradier supports up to 100 symbols per request
+        for i in range(0, len(symbols), 100):
+            batch = symbols[i:i+100]
+            data = self._get('/v1/markets/quotes', {'symbols': ','.join(batch)})
+            if data and 'quotes' in data and 'quote' in data['quotes']:
+                quotes = data['quotes']['quote']
+                if isinstance(quotes, dict): quotes = [quotes]
+                for q in quotes:
+                    if q.get('symbol'): result[q['symbol']] = q
+        return result
+
+    def get_history(self, symbol, days=365):
+        """Get historical daily price data"""
+        end = datetime.now().date()
+        start = end - timedelta(days=days)
+        data = self._get('/v1/markets/history', {
+            'symbol': symbol,
+            'interval': 'daily',
+            'start': start.strftime('%Y-%m-%d'),
+            'end': end.strftime('%Y-%m-%d')
+        })
+        if data and 'history' in data and data['history'] and 'day' in data['history']:
+            days_data = data['history']['day']
+            return [days_data] if isinstance(days_data, dict) else days_data
+        return []
