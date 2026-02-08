@@ -8,13 +8,25 @@ engine = TradingEngine()
 engine.start()
 
 @app.route('/')
-def home(): return send_file('index.html')
+def landing(): return send_file('landing.html')
+
+@app.route('/legal')
+def legal(): return send_file('legal.html')
+
+@app.route('/pre-trade')
+def pre_trade(): return send_file('pre-trade.html')
+
+@app.route('/dashboard')
+def dashboard_page(): return send_file('index.html')
 
 @app.route('/api/dashboard')
 def dashboard(): return jsonify(engine.get_dashboard_data())
 
 @app.route('/api/autopilot', methods=['POST'])
 def toggle_ap(): return jsonify({'autopilot': engine.toggle_autopilot()})
+
+@app.route('/api/overnight', methods=['POST'])
+def toggle_overnight(): return jsonify({'overnight_hold': engine.toggle_overnight()})
 
 @app.route('/api/theme', methods=['POST'])
 def set_theme():

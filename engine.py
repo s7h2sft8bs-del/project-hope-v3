@@ -37,6 +37,9 @@ class TradingEngine:
             'screener_results':{'spreads':[],'directional':[],'scan_time':None,'symbols_scanned':0},
             'backtest_results':None,'backtest_running':False,
             'theme':'dark',
+            'tier': config.TIER,
+            'auto_close': config.AUTO_CLOSE_ENABLED,
+            'overnight_hold': False,  # User can toggle this on
         }
 
         # === RESTORE SAVED STATE ===
@@ -68,6 +71,7 @@ class TradingEngine:
         self.journal = TradeJournal(self.storage)
         self.econ_cal = EconomicCalendar()
         self._log('system', f'Engine initialized. {len(config.WATCHLIST)} symbols. {len(self.analytics.trade_history)} trades loaded.')
+        self._log('system', f'Tier: {config.ACTIVE_TIER["name"]} | Max Positions: {config.ACTIVE_TIER["max_positions"]} | Spreads: {"YES" if config.ACTIVE_TIER["allow_spreads"] else "NO"}')
 
     def start(self):
         self.state['engine_running'] = True
@@ -110,6 +114,16 @@ class TradingEngine:
         while self.state['engine_running']:
             try:
                 if self.state['autopilot'] and self.state['market_open']:
+                    # Tier check - Starter cannot trade spreads
+                    if not config.ACTIVE_TIER['allow_spreads']:
+                        time.sleep(config.SPREAD_SCAN_INTERVAL)
+                        continue
+                    # Position limit check based on tier
+                    total_open = len([s for s in self.state['credit_spreads'] if s['status'] in ['open','pending']]) + \
+                                 len([t for t in self.state['directional_trades'] if t['status'] in ['open','pending']])
+                    if total_open >= config.ACTIVE_TIER['max_positions']:
+                        time.sleep(config.SPREAD_SCAN_INTERVAL)
+                        continue
                     passed, reason = self.protections.check_all('spread')
                     if passed:
                         opps = self.spread_scanner.scan()
@@ -127,12 +141,17 @@ class TradingEngine:
                                     # IV rank check
                                     iv_ok, iv_msg = self.iv_rank.is_iv_favorable(best['symbol'], 'spread')
                                     if iv_ok:
-                                        result = self.spread_scanner.execute_spread(best)
-                                        if result:
-                                            self.state['last_trade_time'] = datetime.now()
-                                            self._log('entry', f"SPREAD: {best['symbol']} ${best['credit']} credit")
-                                            self.alerts.send(f"NEW SPREAD: {best['symbol']}\nCredit: ${best['credit']}")
-                                            self.storage.save_state(self.state)
+                                        # Tier spread width check
+                                        spread_w = best.get('width', config.CS_SPREAD_WIDTH)
+                                        if spread_w > config.ACTIVE_TIER['max_spread_width']:
+                                            self._log('system', f"Tier {config.ACTIVE_TIER['name']}: spread too wide (${spread_w} > ${config.ACTIVE_TIER['max_spread_width']})")
+                                        else:
+                                            result = self.spread_scanner.execute_spread(best)
+                                            if result:
+                                                self.state['last_trade_time'] = datetime.now()
+                                                self._log('entry', f"SPREAD: {best['symbol']} ${best['credit']} credit")
+                                                self.alerts.send(f"NEW SPREAD: {best['symbol']}\nCredit: ${best['credit']}")
+                                                self.storage.save_state(self.state)
                                     else:
                                         self._log('system', f"IV skip: {iv_msg}")
             except Exception as e: print(f"[SPREAD ERR] {e}")
@@ -142,6 +161,12 @@ class TradingEngine:
         while self.state['engine_running']:
             try:
                 if self.state['autopilot'] and self.state['market_open']:
+                    # Position limit check based on tier
+                    total_open = len([s for s in self.state['credit_spreads'] if s['status'] in ['open','pending']]) + \
+                                 len([t for t in self.state['directional_trades'] if t['status'] in ['open','pending']])
+                    if total_open >= config.ACTIVE_TIER['max_positions']:
+                        time.sleep(config.DIRECTIONAL_SCAN_INTERVAL)
+                        continue
                     # Skip directional on high-impact days
                     is_high, _ = self.econ_cal.is_high_impact_day()
                     if is_high:
@@ -269,9 +294,23 @@ class TradingEngine:
 
     def _eod_close(self):
         if not self.state.get('eod_closed_today'):
+            # Skip auto-close if user toggled overnight holds ON
+            if self.state.get('overnight_hold', False):
+                self._log('system', 'Overnight hold ON - skipping auto-close')
+                self.state['eod_closed_today'] = True
+                return
+            closed_count = 0
             for t in self.state['directional_trades']:
                 if t['status']=='open' and not t.get('manual_override'):
-                    self.position_manager._close_dir(t, t['current_qty'], "EOD AUTO-CLOSE")
+                    self.position_manager._close_dir(t, t['current_qty'], "EOD AUTO-CLOSE 3:55 PM")
+                    closed_count += 1
+            for s in self.state['credit_spreads']:
+                if s['status']=='open' and not s.get('manual_override'):
+                    # Close spreads too at EOD
+                    pass  # Spreads typically held to expiration, skip unless needed
+            if closed_count > 0:
+                self._log('system', f'EOD: Closed {closed_count} directional position(s) at 3:55 PM')
+                self.alerts.send(f"EOD AUTO-CLOSE: {closed_count} position(s) closed at 3:55 PM")
             self.state['eod_closed_today'] = True
             self.storage.save_state(self.state)
 
@@ -281,6 +320,13 @@ class TradingEngine:
         self._log('system', f'Autopilot {s}'); self.alerts.send(f"Autopilot {s}")
         self.storage.save_state(self.state)
         return self.state['autopilot']
+
+    def toggle_overnight(self):
+        self.state['overnight_hold'] = not self.state.get('overnight_hold', False)
+        s = "ON" if self.state['overnight_hold'] else "OFF"
+        self._log('system', f'Overnight hold {s} — {"positions will NOT auto-close at 3:55 PM" if self.state["overnight_hold"] else "positions WILL auto-close at 3:55 PM"}')
+        self.storage.save_state(self.state)
+        return self.state['overnight_hold']
 
     def set_theme(self, theme):
         self.state['theme'] = theme
@@ -354,6 +400,10 @@ class TradingEngine:
             'journal_stats':self.journal.get_stats(),
             'sector_heatmap':heatmap,
             'theme':self.state.get('theme','dark'),
+            'tier': config.ACTIVE_TIER,
+            'tier_name': config.ACTIVE_TIER['name'],
+            'overnight_hold': self.state.get('overnight_hold', False),
+            'auto_close': not self.state.get('overnight_hold', False),
         }
 
     def _log(self, lt, msg):

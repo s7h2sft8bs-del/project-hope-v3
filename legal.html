@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Hope — User Agreement & Risk Disclosure</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg-deep: #06080d;
+    --bg-card: #0c1019;
+    --green: #00FFA3;
+    --text: #E2E8F0;
+    --text-dim: #94A3B8;
+    --border: rgba(255,255,255,0.06);
+    --danger: #EF4444;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg-deep); color: var(--text); -webkit-font-smoothing: antialiased; }
+
+.container { max-width: 800px; margin: 0 auto; padding: 40px 24px; }
+
+nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 20px 40px; max-width: 800px; margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+}
+.nav-logo { display: flex; align-items: center; gap: 12px; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; }
+.nav-logo .icon { width: 36px; height: 36px; background: linear-gradient(135deg, #FFD700, #00FFA3); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+nav a { color: var(--green); text-decoration: none; font-size: 14px; font-weight: 600; }
+
+h1 { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; margin: 40px 0 8px; }
+.subtitle { color: var(--text-dim); font-size: 15px; margin-bottom: 40px; }
+.last-updated { color: var(--text-dim); font-size: 13px; margin-bottom: 40px; font-style: italic; }
+
+h2 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin: 36px 0 12px; color: var(--green); }
+h3 { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 700; margin: 24px 0 8px; }
+
+p, li { font-size: 14px; color: var(--text-dim); line-height: 1.8; margin-bottom: 12px; }
+ul, ol { padding-left: 24px; margin-bottom: 16px; }
+li { margin-bottom: 8px; }
+
+.warning-box {
+    background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2);
+    border-radius: 12px; padding: 24px; margin: 24px 0;
+}
+.warning-box h4 { color: var(--danger); font-size: 14px; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+.warning-box p { color: #FCA5A5; }
+
+.highlight-box {
+    background: rgba(0,255,163,0.05); border: 1px solid rgba(0,255,163,0.15);
+    border-radius: 12px; padding: 24px; margin: 24px 0;
+}
+.highlight-box p { color: var(--text); }
+
+.section-divider { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
+
+/* Checkbox agreement form */
+.agreement-form {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 32px; margin: 40px 0;
+}
+.agreement-form h3 { margin-top: 0; color: var(--green); }
+.checkbox-group { margin: 20px 0; }
+.checkbox-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    margin-bottom: 16px; padding: 12px; border-radius: 8px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid var(--border);
+}
+.checkbox-item input[type="checkbox"] {
+    width: 20px; height: 20px; margin-top: 2px; flex-shrink: 0;
+    accent-color: var(--green); cursor: pointer;
+}
+.checkbox-item label { font-size: 14px; color: var(--text); line-height: 1.5; cursor: pointer; }
+
+.sign-section { margin-top: 24px; }
+.sign-section label { display: block; font-size: 13px; color: var(--text-dim); margin-bottom: 6px; font-weight: 600; }
+.sign-section input {
+    width: 100%; padding: 12px 16px; background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border); border-radius: 8px; color: var(--text);
+    font-size: 15px; font-family: 'DM Sans', sans-serif; margin-bottom: 16px;
+}
+.sign-section input:focus { outline: none; border-color: var(--green); }
+
+.agree-btn {
+    width: 100%; padding: 16px; background: linear-gradient(135deg, var(--green), #00cc82);
+    color: #000; border: none; border-radius: 10px; font-weight: 700;
+    font-size: 16px; cursor: pointer; transition: all 0.3s; opacity: 0.4;
+    pointer-events: none;
+}
+.agree-btn.active { opacity: 1; pointer-events: all; }
+.agree-btn.active:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,255,163,0.3); }
+
+footer { max-width: 800px; margin: 0 auto; padding: 40px 24px; border-top: 1px solid var(--border); }
+footer p { font-size: 13px; color: var(--text-dim); }
+</style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-logo"><div class="icon">🌱</div> PROJECT HOPE</div>
+    <a href="project-hope-landing.html">← Back to Home</a>
+</nav>
+
+<div class="container">
+
+<h1>User Agreement & Risk Disclosure</h1>
+<p class="subtitle">Please read every section carefully before subscribing. You must acknowledge and agree to all terms below.</p>
+<p class="last-updated">Last updated: February 8, 2026</p>
+
+<!-- ===== SECTION 1: NATURE OF SERVICE ===== -->
+<h2>1. Nature of the Service</h2>
+<p>Project Hope ("the Service") is an <strong>automated trading software tool</strong> developed and operated by SM Digital Solutions ("the Company," "we," "us"). The Service provides automated options trading functionality through users' own brokerage accounts held at Tradier Brokerage.</p>
+
+<div class="highlight-box">
+<p><strong>Important:</strong> Project Hope is a software tool — not an investment adviser, broker-dealer, or financial planner. We are not registered with the Securities and Exchange Commission (SEC) as an investment adviser or broker-dealer, nor are we registered with the Financial Industry Regulatory Authority (FINRA) or any state securities regulatory authority. We do not manage your money, hold your funds, or have custody of your assets at any time.</p>
+</div>
+
+<p>The Service operates by executing pre-programmed trading strategies using publicly available market data. All trades are executed in your personal Tradier brokerage account using API keys that you provide. You maintain full ownership and control of your brokerage account at all times.</p>
+
+<!-- ===== SECTION 2: AUTOMATED TRADING DISCLOSURE ===== -->
+<h2>2. Automated Trading Disclosure</h2>
+
+<div class="warning-box">
+<h4>⚠️ Critical Disclosure — Automated Trading Risks</h4>
+<p>Automated trading systems, including Project Hope, carry unique and significant risks beyond those associated with manual trading. By using this Service, you acknowledge that you understand and accept all of the following risks.</p>
+</div>
+
+<p>Risks specific to automated trading include but are not limited to:</p>
+<ul>
+    <li><strong>System Failures:</strong> Software bugs, server downtime, internet connectivity issues, API failures, or brokerage platform outages may result in missed trades, duplicate trades, or failure to exit positions.</li>
+    <li><strong>Market Gaps:</strong> Overnight price gaps, halt events, or extreme volatility can cause losses that exceed stop-loss parameters.</li>
+    <li><strong>Execution Risk:</strong> Actual fill prices may differ significantly from expected prices, especially during high-volatility periods or in illiquid options contracts.</li>
+    <li><strong>Strategy Risk:</strong> Past performance of any trading strategy is not indicative of future results. Market conditions change, and strategies that worked historically may fail in the future.</li>
+    <li><strong>Technology Dependency:</strong> The Service depends on third-party infrastructure including Tradier's API, cloud hosting providers, data feeds, and internet connectivity. Failures in any of these systems can impact trading performance.</li>
+    <li><strong>Latency Risk:</strong> Delays in data transmission, order routing, or execution can result in trades being placed at prices materially different from intended prices.</li>
+</ul>
+
+<!-- ===== SECTION 3: OPTIONS TRADING RISKS ===== -->
+<h2>3. Options Trading Risk Disclosure</h2>
+
+<div class="warning-box">
+<h4>⚠️ Options Are High-Risk Securities</h4>
+<p>Options trading involves substantial risk of loss and is not appropriate for all investors. You could lose your entire investment in a very short period of time.</p>
+</div>
+
+<p>Before using this Service, you should understand the following about options trading:</p>
+<ul>
+    <li>Options are leveraged instruments. A relatively small market movement can result in proportionately much larger gains or losses.</li>
+    <li>The buyer of an option may lose the entire premium paid for that option if it expires out of the money.</li>
+    <li>The seller (writer) of an option may face theoretically unlimited losses on naked positions.</li>
+    <li>Credit spreads limit loss to the width of the spread minus premium received, but losses can still be substantial relative to account size.</li>
+    <li>Options contracts have expiration dates. Time decay (theta) works against option buyers and can rapidly erode the value of positions.</li>
+    <li>Implied volatility changes can significantly impact option prices independent of the underlying stock's movement.</li>
+    <li>Early assignment risk exists for all short option positions and may result in unexpected stock positions or margin calls.</li>
+</ul>
+
+<p>You should read the Options Clearing Corporation's disclosure document <strong>"Characteristics and Risks of Standardized Options"</strong> before trading options. This document is available from your broker or at <a href="https://www.theocc.com/company-information/documents-and-archives/options-disclosure-document" target="_blank" style="color:var(--green);">theocc.com</a>.</p>
+
+<!-- ===== SECTION 4: NOT INVESTMENT ADVICE ===== -->
+<h2>4. Not Investment Advice</h2>
+
+<p>The Service does not constitute investment advice, financial advice, trading advice, tax advice, legal advice, or any other form of professional advice. Specifically:</p>
+<ul>
+    <li>We do not consider your individual financial situation, investment objectives, risk tolerance, or financial needs when operating the Service.</li>
+    <li>We are not making personalized investment recommendations to you.</li>
+    <li>The automated trading strategies used by the Service are generic, pre-programmed algorithms that are applied uniformly to all subscribers within the same tier.</li>
+    <li>You should consult with a qualified, licensed financial advisor, tax professional, or attorney before making any investment decisions.</li>
+    <li>Nothing in our communications, marketing materials, website, application, or customer support should be construed as a recommendation to buy, sell, or hold any security.</li>
+</ul>
+
+<!-- ===== SECTION 5: USER RESPONSIBILITIES ===== -->
+<h2>5. Your Responsibilities</h2>
+
+<p>By subscribing to and using the Service, you represent and warrant that:</p>
+<ol>
+    <li>You are at least 18 years of age (or the legal age of majority in your jurisdiction).</li>
+    <li>You are a legal resident of a jurisdiction where options trading is permitted.</li>
+    <li>You have an approved options trading account with Tradier Brokerage with appropriate options trading permissions.</li>
+    <li>You have read and understood the Options Clearing Corporation's disclosure document.</li>
+    <li>You understand the risks of options trading and automated trading systems.</li>
+    <li>You are using only risk capital — money you can afford to lose entirely without impacting your financial wellbeing, ability to pay bills, or quality of life.</li>
+    <li>You will monitor your account regularly, including during market hours.</li>
+    <li>You understand that the Service may malfunction and that you are responsible for monitoring your positions.</li>
+    <li>You will not hold SM Digital Solutions, its owner, employees, or affiliates liable for any trading losses.</li>
+    <li>You have not been advised by SM Digital Solutions or any representative to invest any specific amount or to use money needed for living expenses.</li>
+</ol>
+
+<!-- ===== SECTION 6: ACCOUNT & FUNDS ===== -->
+<h2>6. Your Account & Funds</h2>
+
+<p>SM Digital Solutions does NOT:</p>
+<ul>
+    <li>Hold, manage, or have custody of your funds at any time</li>
+    <li>Have the ability to withdraw or transfer funds from your account</li>
+    <li>Act as a broker-dealer or intermediary for your trades</li>
+    <li>Guarantee the safety or security of your brokerage account</li>
+</ul>
+
+<p>Your funds remain in your personal Tradier brokerage account at all times. The Service accesses your account solely through Tradier's API using credentials that you provide. You may revoke API access at any time by changing your API keys in your Tradier account settings, which will immediately disable the Service's ability to trade in your account.</p>
+
+<!-- ===== SECTION 7: NO GUARANTEES ===== -->
+<h2>7. No Guarantee of Performance</h2>
+
+<div class="warning-box">
+<h4>⚠️ No Profit Guarantees</h4>
+<p>SM Digital Solutions makes absolutely no guarantees, promises, or representations regarding future trading performance, profitability, or returns. You may lose some or all of your invested capital.</p>
+</div>
+
+<p>Any performance data, statistics, testimonials, or results shared by SM Digital Solutions — whether historical, hypothetical, or based on paper trading — are NOT indicative of future results. Specifically:</p>
+<ul>
+    <li>Past performance does not guarantee future results.</li>
+    <li>Paper trading (simulated) results do not reflect actual trading and may overstate performance.</li>
+    <li>Hypothetical performance results have inherent limitations and do not represent actual trading.</li>
+    <li>No representation is being made that any account will or is likely to achieve profits or losses similar to those shown.</li>
+    <li>Market conditions change constantly, and strategies that have been profitable may become unprofitable.</li>
+</ul>
+
+<!-- ===== SECTION 8: SUBSCRIPTION & BILLING ===== -->
+<h2>8. Subscription & Billing</h2>
+<ul>
+    <li>Subscriptions are billed monthly through Stripe.</li>
+    <li>You may cancel at any time. Cancellation takes effect at the end of the current billing period.</li>
+    <li><strong>No refunds</strong> will be issued for partial months or for trading losses incurred while using the Service.</li>
+    <li>SM Digital Solutions reserves the right to change pricing with 30 days' notice.</li>
+    <li>Trading losses are NOT grounds for refund or chargeback. By subscribing, you acknowledge this explicitly.</li>
+</ul>
+
+<!-- ===== SECTION 9: AUTO-CLOSE POLICY ===== -->
+<h2>9. Auto-Close & Overnight Hold Policy</h2>
+<p>By default, the Service is configured to automatically close all open positions before market close (3:55 PM ET) each trading day. This is designed to reduce — but not eliminate — overnight gap risk.</p>
+<p>Users may choose to disable the auto-close feature and hold positions overnight at their own risk. If you disable auto-close:</p>
+<ul>
+    <li>You accept full responsibility for overnight gap risk, including the potential for significant losses.</li>
+    <li>The Service's protection mechanisms (stop-losses, trailing stops, etc.) cannot function while the market is closed.</li>
+    <li>You may experience losses that exceed your stop-loss parameters due to overnight price gaps.</li>
+</ul>
+
+<!-- ===== SECTION 10: TIER LIMITATIONS ===== -->
+<h2>10. Service Tier Limitations</h2>
+<p>The Service is offered in three tiers, each with specific limitations:</p>
+<ul>
+    <li><strong>Starter ($39/month):</strong> Limited to 1 simultaneous position. Long options (calls and puts) only. Minimum account balance of $200 recommended. Credit spreads are not available on this tier.</li>
+    <li><strong>Growth ($99/month):</strong> Up to 5 simultaneous positions. Long options plus narrow credit spreads ($1-2 wide). Minimum account balance of $500 recommended.</li>
+    <li><strong>Pro ($199/month):</strong> Unlimited simultaneous positions (within risk parameters). All strategies including wide credit spreads. Minimum account balance of $2,000 recommended.</li>
+</ul>
+<p>Minimum account balances are recommendations, not guarantees of suitability. You are solely responsible for determining whether your account is adequately funded for the trading activity you authorize.</p>
+
+<!-- ===== SECTION 11: LIMITATION OF LIABILITY ===== -->
+<h2>11. Limitation of Liability</h2>
+<p>TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW:</p>
+<ul>
+    <li>SM Digital Solutions, its owner Stephen Martinez, its employees, contractors, affiliates, and agents shall NOT be liable for any direct, indirect, incidental, special, consequential, or exemplary damages arising from your use of the Service.</li>
+    <li>This includes but is not limited to: trading losses, lost profits, loss of data, loss of goodwill, business interruption, or any other financial loss.</li>
+    <li>Our total cumulative liability to you shall not exceed the amount you paid for the Service in the three (3) months immediately preceding the event giving rise to the claim.</li>
+    <li>You expressly agree that your use of the Service is at your sole risk.</li>
+</ul>
+
+<!-- ===== SECTION 12: INDEMNIFICATION ===== -->
+<h2>12. Indemnification</h2>
+<p>You agree to indemnify, defend, and hold harmless SM Digital Solutions, its owner, employees, contractors, and affiliates from and against any and all claims, damages, obligations, losses, liabilities, costs, and expenses (including attorney's fees) arising from:</p>
+<ul>
+    <li>Your use of the Service</li>
+    <li>Your violation of these terms</li>
+    <li>Your violation of any third-party rights</li>
+    <li>Any trading losses incurred in your brokerage account</li>
+    <li>Any tax obligations arising from trading activity</li>
+</ul>
+
+<!-- ===== SECTION 13: REGULATORY ===== -->
+<h2>13. Regulatory Disclosure</h2>
+
+<div class="highlight-box">
+<p><strong>SEC / FINRA Disclosure:</strong> SM Digital Solutions is not registered as an investment adviser under the Investment Advisers Act of 1940, as a broker-dealer under the Securities Exchange Act of 1934, or with FINRA. The Service is a software tool that executes pre-programmed trading strategies. The Company does not exercise discretionary authority over client accounts in the manner of a registered investment adviser. Users independently choose to subscribe, configure their settings, and can override or disable the Service at any time.</p>
+</div>
+
+<p>The Service is provided as a software-as-a-service (SaaS) product. Users maintain full control over their brokerage accounts, including the ability to:</p>
+<ul>
+    <li>Enable or disable the Service at any time</li>
+    <li>Override any automated trade manually</li>
+    <li>Close any position at any time through their brokerage platform</li>
+    <li>Revoke API access immediately by changing API keys</li>
+    <li>Choose their tier and trading parameters</li>
+</ul>
+
+<p>If regulatory authorities determine that this Service requires registration, SM Digital Solutions will take immediate steps to comply with all applicable regulations or cease operations if compliance is not feasible.</p>
+
+<!-- ===== SECTION 14: TAX ===== -->
+<h2>14. Tax Responsibility</h2>
+<p>You are solely responsible for all tax obligations arising from your trading activity, including but not limited to capital gains taxes, reporting requirements, and wash sale rule compliance. SM Digital Solutions does not provide tax advice and does not issue tax documents. Consult a qualified tax professional regarding your specific situation.</p>
+
+<!-- ===== SECTION 15: GOVERNING LAW ===== -->
+<h2>15. Governing Law & Disputes</h2>
+<p>This Agreement shall be governed by and construed in accordance with the laws of the Commonwealth of Pennsylvania, without regard to its conflict of law provisions. Any disputes arising from this Agreement or your use of the Service shall be resolved through binding arbitration in accordance with the rules of the American Arbitration Association, conducted in Pennsylvania.</p>
+
+<!-- ===== SECTION 16: MODIFICATIONS ===== -->
+<h2>16. Modifications</h2>
+<p>SM Digital Solutions reserves the right to modify these terms at any time. Material changes will be communicated via email at least 14 days before taking effect. Your continued use of the Service after changes become effective constitutes acceptance of the modified terms. If you do not agree with any changes, you must cancel your subscription before the changes take effect.</p>
+
+<!-- ===== SECTION 17: TERMINATION ===== -->
+<h2>17. Termination</h2>
+<p>SM Digital Solutions reserves the right to terminate your access to the Service at any time, for any reason, with or without notice. Upon termination, all open positions will remain in your brokerage account and become your sole responsibility to manage. We recommend closing all positions before your subscription ends.</p>
+
+<hr class="section-divider">
+
+<!-- ===== AGREEMENT FORM ===== -->
+<div class="agreement-form" id="agreement-form">
+    <h3>📋 Acknowledgment & Agreement</h3>
+    <p style="color:var(--text-dim);font-size:14px;margin-bottom:20px;">You must check ALL boxes and sign below to proceed with your subscription.</p>
+
+    <div class="checkbox-group">
+        <div class="checkbox-item">
+            <input type="checkbox" id="check1" onchange="checkAll()">
+            <label for="check1">I have read and understand the <strong>entire User Agreement & Risk Disclosure</strong> document above.</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="check2" onchange="checkAll()">
+            <label for="check2">I understand that <strong>options trading involves substantial risk of loss</strong> and that I could lose some or all of my invested capital.</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="check3" onchange="checkAll()">
+            <label for="check3">I understand that <strong>Project Hope is an automated trading software tool</strong>, not an investment adviser, and does not provide personalized investment advice.</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="check4" onchange="checkAll()">
+            <label for="check4">I understand that <strong>past performance is not indicative of future results</strong> and that no profits or returns are guaranteed.</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="check5" onchange="checkAll()">
+            <label for="check5">I am using only <strong>risk capital</strong> — money I can afford to lose entirely without affecting my financial wellbeing or ability to pay living expenses.</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="check6" onchange="checkAll()">
+            <label for="check6">I understand that <strong>automated trading systems can malfunction</strong> and that I am responsible for monitoring my account and positions.</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="check7" onchange="checkAll()">
+            <label for="check7">I agree that <strong>SM Digital Solutions and Stephen Martinez are NOT liable</strong> for any trading losses, system failures, or damages arising from my use of the Service.</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="check8" onchange="checkAll()">
+            <label for="check8">I understand the <strong>no-refund policy</strong> and that trading losses are not grounds for a refund or chargeback.</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="check9" onchange="checkAll()">
+            <label for="check9">I acknowledge that I have been advised to read the <strong>OCC's "Characteristics and Risks of Standardized Options"</strong> disclosure document before trading options.</label>
+        </div>
+
+        <div class="checkbox-item">
+            <input type="checkbox" id="check10" onchange="checkAll()">
+            <label for="check10">I agree to the <strong>indemnification clause</strong> and will not hold SM Digital Solutions liable for any claims arising from my use of the Service.</label>
+        </div>
+    </div>
+
+    <div class="sign-section">
+        <label>FULL LEGAL NAME (Electronic Signature)</label>
+        <input type="text" id="sig-name" placeholder="Type your full legal name" oninput="checkAll()">
+
+        <label>EMAIL ADDRESS</label>
+        <input type="email" id="sig-email" placeholder="Your email address" oninput="checkAll()">
+
+        <label>DATE</label>
+        <input type="text" id="sig-date" readonly>
+
+        <button class="agree-btn" id="agree-btn" onclick="submitAgreement()">
+            I Agree — Proceed to Payment →
+        </button>
+    </div>
+</div>
+
+</div>
+
+<footer>
+    <p>© 2026 SM Digital Solutions. All rights reserved. | Pennsylvania, USA</p>
+    <p style="margin-top:8px;">Contact: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c7b4b2b7b7a8b5b387b4aaa3aea0aeb3a6abb4a8abb2b3aea8a9b4e9a4a8aa">[email&#160;protected]</a></p>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// Set today's date
+document.getElementById('sig-date').value = new Date().toLocaleDateString('en-US', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+});
+
+function checkAll() {
+    const boxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
+    const allChecked = Array.from(boxes).every(box => box.checked);
+    const name = document.getElementById('sig-name').value.trim();
+    const email = document.getElementById('sig-email').value.trim();
+    const btn = document.getElementById('agree-btn');
+
+    if (allChecked && name.length > 2 && email.includes('@')) {
+        btn.classList.add('active');
+    } else {
+        btn.classList.remove('active');
+    }
+}
+
+function submitAgreement() {
+    const name = document.getElementById('sig-name').value.trim();
+    const email = document.getElementById('sig-email').value.trim();
+    const date = document.getElementById('sig-date').value;
+
+    // Store agreement in localStorage
+    const agreement = {
+        name: name,
+        email: email,
+        date: date,
+        timestamp: new Date().toISOString(),
+        agreed: true
+    };
+    localStorage.setItem('ph_agreement', JSON.stringify(agreement));
+
+    // Redirect to pre-trade acknowledgment
+    window.location.href = '/pre-trade';
+}
+</script>
+</body>
+</html>

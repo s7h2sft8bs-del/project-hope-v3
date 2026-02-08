@@ -21,6 +21,49 @@ VIRTUAL_ACCOUNT_SIZE = 6000
 CREDIT_SPREAD_ALLOCATION = 0.80
 DIRECTIONAL_ALLOCATION = 0.20
 
+# ============ SUBSCRIPTION TIERS ============
+TIER = os.environ.get('HOPE_TIER', 'pro').lower()  # starter, growth, pro
+
+TIER_CONFIG = {
+    'starter': {
+        'name': 'Starter',
+        'price': 39,
+        'min_balance': 200,
+        'max_positions': 1,
+        'allow_spreads': False,
+        'max_spread_width': 0,
+        'max_contract_price': 1.00,  # Only cheap options under $100
+        'description': 'Long calls & puts only',
+    },
+    'growth': {
+        'name': 'Growth',
+        'price': 99,
+        'min_balance': 500,
+        'max_positions': 5,
+        'allow_spreads': True,
+        'max_spread_width': 2,  # Narrow spreads only ($1-2 wide)
+        'max_contract_price': 5.00,
+        'description': 'Long options + narrow credit spreads',
+    },
+    'pro': {
+        'name': 'Pro',
+        'price': 199,
+        'min_balance': 2000,
+        'max_positions': 99,  # Unlimited (within risk params)
+        'allow_spreads': True,
+        'max_spread_width': 99,  # Any width
+        'max_contract_price': 99.00,
+        'description': 'All strategies, all spread widths',
+    },
+}
+
+# Active tier settings
+ACTIVE_TIER = TIER_CONFIG.get(TIER, TIER_CONFIG['pro'])
+
+# ============ AUTO-CLOSE ============
+AUTO_CLOSE_ENABLED = True  # Close all positions at 3:55 PM ET by default
+AUTO_CLOSE_TIME = 955  # 3:55 PM in minutes from midnight
+
 # ============ CREDIT SPREAD SETTINGS ============
 CS_MAX_OPEN = 8
 CS_MAX_NEW_PER_DAY = 3

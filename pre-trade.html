@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Hope — Trading Acknowledgment</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg-deep: #06080d;
+    --bg-card: #0c1019;
+    --green: #00FFA3;
+    --green-dim: rgba(0,255,163,0.15);
+    --gold: #FFD700;
+    --text: #E2E8F0;
+    --text-dim: #94A3B8;
+    --border: rgba(255,255,255,0.06);
+    --danger: #EF4444;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'DM Sans', sans-serif; background: var(--bg-deep); color: var(--text); -webkit-font-smoothing: antialiased; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px; }
+
+.container { max-width: 640px; width: 100%; }
+
+.logo {
+    text-align: center; margin-bottom: 32px;
+}
+.logo .icon {
+    display: inline-flex; width: 48px; height: 48px;
+    background: linear-gradient(135deg, var(--gold), var(--green));
+    border-radius: 12px; align-items: center; justify-content: center;
+    font-size: 24px; margin-bottom: 12px;
+}
+.logo h2 {
+    font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800;
+}
+.logo p { color: var(--text-dim); font-size: 14px; margin-top: 4px; }
+
+.warning-banner {
+    background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25);
+    border-radius: 12px; padding: 20px 24px; margin-bottom: 28px;
+    display: flex; align-items: flex-start; gap: 12px;
+}
+.warning-banner .icon { font-size: 24px; flex-shrink: 0; }
+.warning-banner h4 { color: var(--danger); font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.warning-banner p { color: #FCA5A5; font-size: 13px; line-height: 1.6; }
+
+.card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 32px; margin-bottom: 20px;
+}
+.card h3 {
+    font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700;
+    margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+}
+.card h3 .num {
+    width: 28px; height: 28px; background: var(--green-dim);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; color: var(--green); font-weight: 800; flex-shrink: 0;
+}
+
+.checkbox-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    margin-bottom: 14px; padding: 14px 16px; border-radius: 10px;
+    background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+    transition: all 0.3s; cursor: pointer;
+}
+.checkbox-item:hover { border-color: rgba(0,255,163,0.15); background: rgba(0,255,163,0.03); }
+.checkbox-item.checked { border-color: rgba(0,255,163,0.3); background: rgba(0,255,163,0.05); }
+.checkbox-item input[type="checkbox"] {
+    width: 22px; height: 22px; margin-top: 1px; flex-shrink: 0;
+    accent-color: var(--green); cursor: pointer;
+}
+.checkbox-item label {
+    font-size: 14px; color: var(--text); line-height: 1.5; cursor: pointer;
+}
+.checkbox-item label strong { color: #fff; }
+
+.tier-info {
+    background: rgba(0,255,163,0.05); border: 1px solid rgba(0,255,163,0.15);
+    border-radius: 10px; padding: 16px 20px; margin-bottom: 20px;
+}
+.tier-info p { font-size: 13px; color: var(--text); margin: 0; line-height: 1.6; }
+.tier-info .label { color: var(--green); font-weight: 700; }
+
+.sig-section { margin-top: 24px; }
+.sig-section label {
+    display: block; font-size: 12px; color: var(--text-dim);
+    margin-bottom: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;
+}
+.sig-section input {
+    width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border); border-radius: 10px; color: var(--text);
+    font-size: 15px; font-family: 'DM Sans', sans-serif; margin-bottom: 16px;
+    transition: border-color 0.3s;
+}
+.sig-section input:focus { outline: none; border-color: var(--green); }
+
+.activate-btn {
+    width: 100%; padding: 18px; border: none; border-radius: 12px;
+    font-weight: 700; font-size: 16px; cursor: pointer;
+    transition: all 0.3s; margin-top: 8px;
+    background: rgba(255,255,255,0.05); color: var(--text-dim);
+    pointer-events: none;
+}
+.activate-btn.ready {
+    background: linear-gradient(135deg, var(--green), #00cc82);
+    color: #000; pointer-events: all;
+    animation: glow 2s ease-in-out infinite;
+}
+.activate-btn.ready:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0,255,163,0.3);
+}
+@keyframes glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(0,255,163,0.1); }
+    50% { box-shadow: 0 0 30px rgba(0,255,163,0.25); }
+}
+
+.progress-bar {
+    width: 100%; height: 6px; background: rgba(255,255,255,0.05);
+    border-radius: 3px; margin-bottom: 28px; overflow: hidden;
+}
+.progress-bar .fill {
+    height: 100%; background: linear-gradient(90deg, var(--green), var(--gold));
+    border-radius: 3px; transition: width 0.4s ease; width: 0%;
+}
+.progress-text {
+    text-align: center; font-size: 13px; color: var(--text-dim);
+    margin-bottom: 8px; font-weight: 600;
+}
+
+.footer-note {
+    text-align: center; margin-top: 24px; font-size: 12px; color: var(--text-dim); line-height: 1.6;
+}
+.footer-note a { color: var(--green); text-decoration: none; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="logo">
+        <div class="icon">🌱</div>
+        <h2>Before You Activate</h2>
+        <p>You must acknowledge all items below before the trading bot can be enabled.</p>
+    </div>
+
+    <div class="progress-text"><span id="progress-count">0</span> of 12 acknowledged</div>
+    <div class="progress-bar"><div class="fill" id="progress-fill"></div></div>
+
+    <!-- WARNING BANNER -->
+    <div class="warning-banner">
+        <div class="icon">⚠️</div>
+        <div>
+            <h4>Read Every Item Carefully</h4>
+            <p>This is not a formality. Options trading is high-risk. Automated systems can malfunction. You must understand and accept these risks before proceeding.</p>
+        </div>
+    </div>
+
+    <!-- SECTION 1: TRADING RISKS -->
+    <div class="card">
+        <h3><span class="num">1</span> I Understand the Trading Risks</h3>
+
+        <div class="checkbox-item" onclick="toggleCheck('c1')">
+            <input type="checkbox" id="c1" onchange="updateProgress()">
+            <label for="c1">I understand that <strong>options trading is high-risk</strong> and I could lose some or all of my invested capital, including my entire account balance.</label>
+        </div>
+
+        <div class="checkbox-item" onclick="toggleCheck('c2')">
+            <input type="checkbox" id="c2" onchange="updateProgress()">
+            <label for="c2">I am trading with <strong>risk capital only</strong> — money I can afford to lose entirely without affecting my ability to pay rent, bills, or living expenses.</label>
+        </div>
+
+        <div class="checkbox-item" onclick="toggleCheck('c3')">
+            <input type="checkbox" id="c3" onchange="updateProgress()">
+            <label for="c3">I understand that <strong>no profits are guaranteed</strong> and that past performance, paper trading results, and historical data do not guarantee future results.</label>
+        </div>
+    </div>
+
+    <!-- SECTION 2: AUTOMATED SYSTEM RISKS -->
+    <div class="card">
+        <h3><span class="num">2</span> I Understand the Automation Risks</h3>
+
+        <div class="checkbox-item" onclick="toggleCheck('c4')">
+            <input type="checkbox" id="c4" onchange="updateProgress()">
+            <label for="c4">I understand that <strong>automated systems can malfunction</strong> due to software bugs, server outages, API failures, or internet connectivity issues, which may result in unexpected trades or losses.</label>
+        </div>
+
+        <div class="checkbox-item" onclick="toggleCheck('c5')">
+            <input type="checkbox" id="c5" onchange="updateProgress()">
+            <label for="c5">I understand that <strong>stop-losses are not guaranteed</strong> — market gaps, halts, or extreme volatility can cause losses that exceed my stop-loss settings.</label>
+        </div>
+
+        <div class="checkbox-item" onclick="toggleCheck('c6')">
+            <input type="checkbox" id="c6" onchange="updateProgress()">
+            <label for="c6">I accept responsibility for <strong>monitoring my account</strong> during market hours and understand that I should not rely solely on the automated system.</label>
+        </div>
+    </div>
+
+    <!-- SECTION 3: LIABILITY & LEGAL -->
+    <div class="card">
+        <h3><span class="num">3</span> I Accept the Terms</h3>
+
+        <div class="checkbox-item" onclick="toggleCheck('c7')">
+            <input type="checkbox" id="c7" onchange="updateProgress()">
+            <label for="c7">I understand that <strong>Project Hope is a software tool, not an investment adviser</strong>. It does not provide personalized financial advice and is not registered with the SEC or FINRA.</label>
+        </div>
+
+        <div class="checkbox-item" onclick="toggleCheck('c8')">
+            <input type="checkbox" id="c8" onchange="updateProgress()">
+            <label for="c8">I agree that <strong>SM Digital Solutions and Stephen Martinez are not liable</strong> for any trading losses, missed trades, system errors, or damages resulting from my use of the Service.</label>
+        </div>
+
+        <div class="checkbox-item" onclick="toggleCheck('c9')">
+            <input type="checkbox" id="c9" onchange="updateProgress()">
+            <label for="c9">I understand the <strong>auto-close policy</strong>: all positions close before market close by default. If I toggle this off to hold overnight, I accept all additional risk.</label>
+        </div>
+
+        <div class="checkbox-item" onclick="toggleCheck('c10')">
+            <input type="checkbox" id="c10" onchange="updateProgress()">
+            <label for="c10">I understand that <strong>trading losses are not grounds for a refund</strong> of my subscription fee, and I will not file a chargeback based on trading performance.</label>
+        </div>
+    </div>
+
+    <!-- SECTION 4: FINAL CONFIRMATION -->
+    <div class="card">
+        <h3><span class="num">4</span> Final Confirmation</h3>
+
+        <div class="checkbox-item" onclick="toggleCheck('c11')">
+            <input type="checkbox" id="c11" onchange="updateProgress()">
+            <label for="c11">I have read and agreed to the full <strong><a href="/legal" target="_blank" style="color:var(--green);">User Agreement & Risk Disclosure</a></strong> document.</label>
+        </div>
+
+        <div class="checkbox-item" onclick="toggleCheck('c12')">
+            <input type="checkbox" id="c12" onchange="updateProgress()">
+            <label for="c12">I confirm that <strong>I am activating this trading bot of my own free will</strong>, with full knowledge of the risks, and that no one has pressured me or guaranteed me profits.</label>
+        </div>
+
+        <div class="sig-section">
+            <label>Type Your Full Name to Confirm</label>
+            <input type="text" id="sig-name" placeholder="Your full legal name" oninput="updateProgress()">
+
+            <label>Today's Date</label>
+            <input type="text" id="sig-date" readonly>
+        </div>
+
+        <button class="activate-btn" id="activate-btn" onclick="activateTrading()">
+            🔒 Complete All Items to Activate Trading
+        </button>
+    </div>
+
+    <p class="footer-note">
+        By activating, a record of your acknowledgment is saved with your name, date, and timestamp.<br>
+        Questions? Contact <a href="/cdn-cgi/l/email-protection#abd8dedbdbc4d9dfebd8c6cfc2ccc2dfcac7d8c4c7dedfc2c4c5d885c8c4c6"><span class="__cf_email__" data-cfemail="c8bbbdb8b8a7babc88bba5aca1afa1bca9a4bba7a4bdbca1a7a6bbe6aba7a5">[email&#160;protected]</span></a>
+    </p>
+
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// Set today's date
+document.getElementById('sig-date').value = new Date().toLocaleDateString('en-US', {
+    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+});
+
+function toggleCheck(id) {
+    const cb = document.getElementById(id);
+    cb.checked = !cb.checked;
+    cb.dispatchEvent(new Event('change'));
+    
+    // Visual feedback
+    const item = cb.closest('.checkbox-item');
+    if (cb.checked) {
+        item.classList.add('checked');
+    } else {
+        item.classList.remove('checked');
+    }
+}
+
+function updateProgress() {
+    const total = 12;
+    const checks = document.querySelectorAll('.checkbox-item input[type="checkbox"]');
+    let count = 0;
+    checks.forEach(c => { if (c.checked) count++; });
+
+    // Update progress bar
+    const pct = (count / total) * 100;
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-count').textContent = count;
+
+    // Check if all done + name entered
+    const name = document.getElementById('sig-name').value.trim();
+    const btn = document.getElementById('activate-btn');
+
+    if (count === total && name.length > 2) {
+        btn.classList.add('ready');
+        btn.textContent = '🌱 Activate Trading Bot →';
+    } else {
+        btn.classList.remove('ready');
+        btn.textContent = '🔒 Complete All Items to Activate Trading (' + count + '/' + total + ')';
+    }
+}
+
+function activateTrading() {
+    const name = document.getElementById('sig-name').value.trim();
+    const date = document.getElementById('sig-date').value;
+
+    // Store acknowledgment
+    const ack = {
+        name: name,
+        date: date,
+        timestamp: new Date().toISOString(),
+        acknowledged: true,
+        items_agreed: 12
+    };
+    localStorage.setItem('ph_trading_ack', JSON.stringify(ack));
+
+    // Redirect to trading dashboard
+    alert('✅ Trading Acknowledgment Complete!\n\nSigned by: ' + name + '\nDate: ' + date + '\n\nYour trading bot is now ready to activate.');
+    window.location.href = '/dashboard';
+}
+
+// Prevent checkbox items from double-toggling when clicking the checkbox directly
+document.querySelectorAll('.checkbox-item input').forEach(input => {
+    input.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const item = input.closest('.checkbox-item');
+        if (input.checked) {
+            item.classList.add('checked');
+        } else {
+            item.classList.remove('checked');
+        }
+        updateProgress();
+    });
+});
+</script>
+</body>
+</html>
