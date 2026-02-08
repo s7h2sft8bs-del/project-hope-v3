@@ -315,6 +315,18 @@ function activateTrading() {
     };
     localStorage.setItem('ph_trading_ack', JSON.stringify(ack));
 
+    fetch('/api/agreement', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            type: 'pre_trade_acknowledgment',
+            name: name,
+            date: date,
+            timestamp: new Date().toISOString(),
+            items_agreed: 12
+        })
+    }).then(r => r.json()).then(d => console.log('Saved:', d));
+
     // Redirect to trading dashboard
     alert('✅ Trading Acknowledgment Complete!\n\nSigned by: ' + name + '\nDate: ' + date + '\n\nYour trading bot is now ready to activate.');
     window.location.href = '/dashboard';

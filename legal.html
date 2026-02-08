@@ -419,6 +419,20 @@ function submitAgreement() {
     };
     localStorage.setItem('ph_agreement', JSON.stringify(agreement));
 
+    fetch('/api/agreement', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            type: 'legal_agreement',
+            name: name,
+            email: email,
+            date: date,
+            timestamp: new Date().toISOString(),
+            sections_agreed: 17,
+            checkboxes_checked: 10
+        })
+    }).then(r => r.json()).then(d => console.log('Saved:', d));
+
     // Redirect to pre-trade acknowledgment
     window.location.href = '/pre-trade';
 }
