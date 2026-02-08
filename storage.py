@@ -25,6 +25,8 @@ TRADES_FILE = os.path.join(STORAGE_DIR, 'trade_history.json')
 ANALYTICS_FILE = os.path.join(STORAGE_DIR, 'analytics_data.json')
 BACKTEST_FILE = os.path.join(STORAGE_DIR, 'backtest_results.json')
 DAILY_LOG_FILE = os.path.join(STORAGE_DIR, 'daily_log.json')
+AGREEMENTS_FILE = os.path.join(STORAGE_DIR, 'user_agreements.json')
+
 
 class Storage:
     def __init__(self):
@@ -173,6 +175,22 @@ class Storage:
             }
         except:
             return {'storage_dir': STORAGE_DIR, 'error': 'Could not read stats'}
+
+
+    def save_agreement(self, data):
+        try:
+            records = self._read(AGREEMENTS_FILE) or []
+            data['saved_at'] = datetime.now().isoformat()
+            records.append(data)
+            self._write(AGREEMENTS_FILE, records)
+            print(f'[STORAGE] Agreement saved: {data.get("type","unknown")}')
+            return True
+        except Exception as e:
+            print(f'[STORAGE ERROR] {e}')
+            return False
+
+    def load_agreements(self):
+        return self._read(AGREEMENTS_FILE) or []
 
     # ========== INTERNAL ==========
 

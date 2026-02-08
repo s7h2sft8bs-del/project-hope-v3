@@ -155,5 +155,18 @@ def export_csv():
     return Response(csv_data, mimetype='text/csv',
                     headers={'Content-Disposition': 'attachment;filename=project_hope_trades.csv'})
 
+
+@app.route('/api/agreement', methods=['POST'])
+def save_agreement():
+    d = request.json or {}
+    d['ip'] = request.remote_addr
+    success = engine.storage.save_agreement(d)
+    return jsonify({'saved': success})
+
+@app.route('/api/agreements')
+def list_agreements():
+    records = engine.storage.load_agreements()
+    return jsonify({'total': len(records), 'records': records})
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
