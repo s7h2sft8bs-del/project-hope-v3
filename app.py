@@ -166,6 +166,9 @@ def save_agreement():
 @app.route('/api/agreements')
 def list_agreements():
     records = engine.storage.load_agreements()
+    q = request.args.get('search','').lower()
+    if q:
+        records = [r for r in records if q in r.get('name','').lower() or q in r.get('email','').lower() or q in r.get('ip','').lower()]
     return jsonify({'total': len(records), 'records': records})
 
 if __name__ == '__main__':
