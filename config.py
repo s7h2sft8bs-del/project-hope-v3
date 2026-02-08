@@ -33,6 +33,8 @@ TIER_CONFIG = {
         'allow_spreads': False,
         'max_spread_width': 0,
         'max_contract_price': 1.00,  # Only cheap options under $100
+        'alloc_directional': 1.00,
+        'alloc_spreads': 0.00,
         'description': 'Long calls & puts only',
     },
     'growth': {
@@ -43,16 +45,20 @@ TIER_CONFIG = {
         'allow_spreads': True,
         'max_spread_width': 2,  # Narrow spreads only ($1-2 wide)
         'max_contract_price': 5.00,
+        'alloc_directional': 0.60,
+        'alloc_spreads': 0.40,
         'description': 'Long options + narrow credit spreads',
     },
     'pro': {
         'name': 'Pro',
         'price': 199,
         'min_balance': 2000,
-        'max_positions': 99,  # Unlimited (within risk params)
+        'max_positions': 10,  # Capped for safety
         'allow_spreads': True,
         'max_spread_width': 99,  # Any width
         'max_contract_price': 99.00,
+        'alloc_directional': 0.50,
+        'alloc_spreads': 0.50,
         'description': 'All strategies, all spread widths',
     },
 }
