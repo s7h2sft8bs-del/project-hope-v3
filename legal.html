@@ -310,6 +310,11 @@ footer p { font-size: 13px; color: var(--text-dim); }
     <p style="color:var(--text-dim);font-size:14px;margin-bottom:20px;">You must check ALL boxes and sign below to proceed with your subscription.</p>
 
     <div class="checkbox-group">
+
+                <div class="checkbox-item">
+                    <input type="checkbox" id="check0" onchange="checkProgress()">
+                    <label for="check0">I confirm I am <strong>at least 18 years of age</strong> and legally able to open a brokerage account.</label>
+                </div>
         <div class="checkbox-item">
             <input type="checkbox" id="check1" onchange="checkAll()">
             <label for="check1">I have read and understand the <strong>entire User Agreement & Risk Disclosure</strong> document above.</label>
