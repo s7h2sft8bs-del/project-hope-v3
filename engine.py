@@ -25,7 +25,7 @@ class TradingEngine:
         self.alerts = Alerts()
         self.storage = Storage()
         self.state = {
-            'autopilot':False,'connected':False,'balance':{},'vix':20,
+            'autopilot':True,'connected':False,'balance':{},'vix':20,
             'daily_pnl':0,'last_trade_time':None,
             'credit_spreads':[],'cs_trades_today':0,
             'directional_trades':[],'dir_trades_today':0,
@@ -47,7 +47,7 @@ class TradingEngine:
         if saved:
             for key in ['credit_spreads','directional_trades','wins','losses',
                         'consecutive_losses','total_pnl','daily_pnl',
-                        'cs_trades_today','dir_trades_today','theme']:
+                        'cs_trades_today','dir_trades_today','theme','autopilot']:
                 if key in saved: self.state[key] = saved[key]
             if saved.get('today','') != str(date.today()):
                 self.state.update({'cs_trades_today':0,'dir_trades_today':0,'daily_pnl':0,'consecutive_losses':0})
