@@ -14,7 +14,7 @@ class TradierAPI:
 
     def _get(self, endpoint, params=None):
         try:
-            r = requests.get(f"{self.base_url}{endpoint}", headers=self.headers, params=params, timeout=10)
+            r = requests.get(f"{self.base_url}{endpoint}", headers=self.headers, params=params, timeout=30)
             return r.json() if r.status_code == 200 else None
         except Exception as e:
             print(f"[API ERROR] {endpoint}: {e}")
@@ -22,7 +22,7 @@ class TradierAPI:
 
     def _post(self, endpoint, data=None):
         try:
-            r = requests.post(f"{self.base_url}{endpoint}", headers=self.headers, data=data, timeout=10)
+            r = requests.post(f"{self.base_url}{endpoint}", headers=self.headers, data=data, timeout=30)
             return r.json() if r.status_code in [200, 201] else None
         except Exception as e:
             print(f"[API ERROR] {endpoint}: {e}")
