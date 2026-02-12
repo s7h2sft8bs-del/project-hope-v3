@@ -1,4 +1,4 @@
-"""PROJECT HOPE v3.0 - Greeks Dashboard - Real-time portfolio Greeks from Tradier"""
+"""PROJECT HOPE v3.0 - Greeks Dashboard - Credit Spreads Only"""
 from datetime import datetime
 
 class GreeksDashboard:
@@ -14,15 +14,6 @@ class GreeksDashboard:
                 if g:
                     total['delta']+=g['net_delta'];total['gamma']+=g['net_gamma']
                     total['theta']+=g['net_theta'];total['vega']+=g['net_vega']
-                    total['positions'].append(g)
-            except: pass
-        # Directional trades removed - credit spreads only
-            if trade['status'] != 'open': continue
-            try:
-                g = self._option_greeks(trade)
-                if g:
-                    total['delta']+=g['delta'];total['gamma']+=g['gamma']
-                    total['theta']+=g['theta'];total['vega']+=g['vega']
                     total['positions'].append(g)
             except: pass
         total['delta']=round(total['delta'],2);total['gamma']=round(total['gamma'],4)
@@ -42,10 +33,3 @@ class GreeksDashboard:
             'net_theta': round((-sg.get('theta',0)+lg.get('theta',0))*qty*100, 2),
             'net_vega': round((-sg.get('vega',0)+lg.get('vega',0))*qty*100, 2),
         }
-
-    def _option_greeks(self, trade):
-        quote = self.api.get_quote(trade['option_symbol'])
-        if not quote: return None
-        g = quote.get('greeks', {}) or {}
-        qty = trade.get('current_qty', trade.get('contracts', 1))
-        return {
