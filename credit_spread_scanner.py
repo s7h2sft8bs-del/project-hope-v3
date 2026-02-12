@@ -110,3 +110,15 @@ def check_trend(api, symbol):
         if s5 < s20: return "bearish"
         return "neutral"
     except: return "neutral"
+
+def check_trend(api, symbol):
+    try:
+        h = api.get_history(symbol, days=30)
+        if not h or len(h) < 20: return "neutral"
+        c = [d.get("close",0) for d in h[-20:]]
+        s5 = sum(c[-5:])/5
+        s20 = sum(c)/20
+        if s5 > s20: return "bullish"
+        if s5 < s20: return "bearish"
+        return "neutral"
+    except: return "neutral"
