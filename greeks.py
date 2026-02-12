@@ -49,9 +49,3 @@ class GreeksDashboard:
         g = quote.get('greeks', {}) or {}
         qty = trade.get('current_qty', trade.get('contracts', 1))
         return {
-            'symbol': trade['symbol'], 'type': 'dir_'+trade.get('option_type',''),
-            'delta': round(g.get('delta',0)*qty*100, 2),
-            'gamma': round(g.get('gamma',0)*qty*100, 4),
-            'theta': round(g.get('theta',0)*qty*100, 2),
-            'vega': round(g.get('vega',0)*qty*100, 2),
-        }

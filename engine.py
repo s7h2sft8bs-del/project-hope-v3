@@ -186,7 +186,7 @@ class TradingEngine:
                     self.state['screener_results'] = {
                         'spreads':all_sp[:20],
                         'scan_time':datetime.now().isoformat(),'symbols_scanned':len(syms),
-                        'total_spread_opps':len(all_sp),'total_dir_opps':len(all_dr)}
+                        'total_spread_opps':len(all_sp)}
             except Exception as e: print(f"[SCR ERR] {e}")
             time.sleep(120)
 
@@ -344,7 +344,6 @@ class TradingEngine:
         w=self.state['wins'];l=self.state['losses']
         wr=round((w/(w+l))*100,1) if (w+l)>0 else 0
         used=sum((config.CS_SPREAD_WIDTH-s['credit'])*s['contracts']*100 for s in os_)
-        # directional removed
         
         # Sector heatmap (cached, only refresh occasionally)
         heatmap = []

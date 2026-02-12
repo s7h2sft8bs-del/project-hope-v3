@@ -83,12 +83,10 @@ class Backtester:
             symbols = ['SPY','QQQ','AAPL','MSFT','AMZN','NVDA','AMD','TSLA','META','GOOGL','NFLX','BA','JPM','XOM','GS']
 
         cs_results = {}
-        dir_results = {}
         for sym in symbols:
             try:
                 cs = self.run_credit_spread_backtest(sym, days)
                 if 'error' not in cs: cs_results[sym] = cs
-                if 'error' not in dr: dir_results[sym] = dr
             except Exception as e:
                 print(f"[BT ERR] {sym}: {e}")
 
@@ -96,7 +94,6 @@ class Backtester:
             'credit_spreads': self._aggregate(cs_results),
             'symbols_tested': len(symbols),
             'per_symbol_cs': {k: {'win_rate': v['win_rate'], 'return': v['total_return'], 'sharpe': v['sharpe'], 'max_dd': v['max_dd']} for k, v in cs_results.items()},
-            'per_symbol_dir': {k: {'win_rate': v['win_rate'], 'return': v['total_return'], 'sharpe': v['sharpe'], 'max_dd': v['max_dd']} for k, v in dir_results.items()},
         }
 
     def _compile_results(self, symbol, days, trades, wins, losses, balance, max_dd, daily_returns):

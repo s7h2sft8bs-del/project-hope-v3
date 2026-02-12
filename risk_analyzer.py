@@ -74,11 +74,9 @@ class RiskAnalyzer:
             risk = (config.CS_SPREAD_WIDTH - s['credit']) * s.get('contracts', 1) * 100
             max_risk = max(max_risk, risk)
         for t in open_dir:
-            risk = t['entry_price'] * t.get('current_qty', 1) * 100
             max_risk = max(max_risk, risk)
 
         total_risk = sum((config.CS_SPREAD_WIDTH - s['credit']) * s.get('contracts', 1) * 100 for s in open_spreads)
-        total_risk += sum(t['entry_price'] * t.get('current_qty', 1) * 100 for t in open_dir)
 
         self.last_stress = datetime.now().isoformat()
         

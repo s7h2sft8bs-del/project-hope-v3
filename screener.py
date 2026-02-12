@@ -10,7 +10,7 @@ class OptionsScreener:
 
     def full_scan(self, symbols=None):
         if symbols is None: symbols = config.WATCHLIST
-        spread_opps = []; dir_opps = []; scanned = 0; errors = 0
+        spread_opps = []; scanned = 0; errors = 0
         for symbol in symbols:
             try:
                 quote = self.api.get_quote(symbol)
@@ -25,15 +25,13 @@ class OptionsScreener:
 
                 if vol_ratio > 1.2 and abs(change) > 0.5:
                     d = self._scan_dir(symbol, price, change, vol_ratio, quote)
-                    if d: dir_opps.append(d)
             except: errors += 1; continue
 
         spread_opps.sort(key=lambda x: x.get('score',0), reverse=True)
-        dir_opps.sort(key=lambda x: x.get('score',0), reverse=True)
         self.last_scan_results = {
             'spreads': spread_opps[:20],
             'scan_time': datetime.now().isoformat(), 'symbols_scanned': scanned,
-            'errors': errors, 'total_spread_opps': len(spread_opps), 'total_dir_opps': len(dir_opps),
+            'errors': errors, 'total_spread_opps': len(spread_opps), 
         }
         return self.last_scan_results
 
