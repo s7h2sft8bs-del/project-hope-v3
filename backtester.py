@@ -1,6 +1,6 @@
 """
 PROJECT HOPE v3.0 - Backtesting Engine
-Tests credit spread + directional strategies against historical price data
+Tests credit spread strategies against historical price data
 Uses FREE Tradier historical data - no proprietary tools needed
 """
 import math
@@ -77,80 +77,6 @@ class Backtester:
 
         return self._compile_results(symbol, days, trades, wins, losses, balance, max_dd, daily_returns)
 
-    def run_directional_backtest(self, symbol='SPY', days=365):
-        """Simulate directional strategy on historical data"""
-        history = self.api.get_history(symbol, days)
-        if not history or len(history) < 10:
-            return {'error': f'Insufficient data for {symbol}', 'symbol': symbol}
-
-        trades = []
-        balance = config.BACKTEST_INITIAL_BALANCE
-        wins = losses = 0
-        peak = balance
-        max_dd = 0
-        daily_returns = []
-
-        for i in range(2, len(history) - 5):
-            prev = history[i-1]
-            curr = history[i]
-            price = curr.get('close', 0)
-            prev_close = prev.get('close', 0)
-            volume = curr.get('volume', 0)
-            avg_vol = prev.get('volume', 1)
-            if price <= 0 or prev_close <= 0: continue
-
-            change_pct = ((price - prev_close) / prev_close) * 100
-            vol_ratio = volume / avg_vol if avg_vol > 0 else 0
-
-            # Only trigger on strong momentum + volume
-            if abs(change_pct) < 1.5 or vol_ratio < 1.3:
-                continue
-
-            direction = 'call' if change_pct > 0 else 'put'
-            option_cost = round(price * 0.02, 2)
-
-            # Check next 5 days
-            exit_idx = min(i + 5, len(history) - 1)
-            exit_price = history[exit_idx].get('close', price)
-
-            if direction == 'call':
-                move = ((exit_price - price) / price) * 100
-            else:
-                move = ((price - exit_price) / price) * 100
-
-            # Simulate option P&L (leveraged ~3x stock move)
-            option_pnl_pct = move * 3
-            if option_pnl_pct >= config.DIR_TP1_PCT:
-                pnl = round(option_cost * (config.DIR_TP1_PCT / 100) * 100, 2)
-                wins += 1
-                result = 'T1_WIN'
-            elif option_pnl_pct <= -config.DIR_STOP_LOSS_PCT:
-                pnl = round(-option_cost * (config.DIR_STOP_LOSS_PCT / 100) * 100, 2)
-                losses += 1
-                result = 'STOP_LOSS'
-            elif option_pnl_pct > 0:
-                pnl = round(option_cost * (option_pnl_pct / 100) * 50, 2)
-                wins += 1
-                result = 'SMALL_WIN'
-            else:
-                pnl = round(option_cost * (option_pnl_pct / 100) * 100, 2)
-                losses += 1
-                result = 'LOSS'
-
-            balance += pnl
-            daily_returns.append(pnl / max(balance, 1))
-            if balance > peak: peak = balance
-            dd = ((peak - balance) / peak * 100) if peak > 0 else 0
-            if dd > max_dd: max_dd = dd
-
-            trades.append({
-                'date': curr.get('date', ''), 'symbol': symbol,
-                'direction': direction, 'entry': price, 'exit': round(exit_price, 2),
-                'pnl': pnl, 'result': result, 'balance': round(balance, 2)
-            })
-
-        return self._compile_results(symbol, days, trades, wins, losses, balance, max_dd, daily_returns)
-
     def run_full_backtest(self, symbols=None, days=365):
         """Run backtest across top symbols for both strategies"""
         if not symbols:
@@ -162,14 +88,12 @@ class Backtester:
             try:
                 cs = self.run_credit_spread_backtest(sym, days)
                 if 'error' not in cs: cs_results[sym] = cs
-                dr = self.run_directional_backtest(sym, days)
                 if 'error' not in dr: dir_results[sym] = dr
             except Exception as e:
                 print(f"[BT ERR] {sym}: {e}")
 
         return {
             'credit_spreads': self._aggregate(cs_results),
-            'directional': self._aggregate(dir_results),
             'symbols_tested': len(symbols),
             'per_symbol_cs': {k: {'win_rate': v['win_rate'], 'return': v['total_return'], 'sharpe': v['sharpe'], 'max_dd': v['max_dd']} for k, v in cs_results.items()},
             'per_symbol_dir': {k: {'win_rate': v['win_rate'], 'return': v['total_return'], 'sharpe': v['sharpe'], 'max_dd': v['max_dd']} for k, v in dir_results.items()},

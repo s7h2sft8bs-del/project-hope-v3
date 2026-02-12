@@ -16,7 +16,7 @@ class GreeksDashboard:
                     total['theta']+=g['net_theta'];total['vega']+=g['net_vega']
                     total['positions'].append(g)
             except: pass
-        for trade in state.get('directional_trades', []):
+        # Directional trades removed - credit spreads only
             if trade['status'] != 'open': continue
             try:
                 g = self._option_greeks(trade)

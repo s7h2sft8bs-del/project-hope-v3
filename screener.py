@@ -6,7 +6,7 @@ from probability import calculate_spread_metrics
 class OptionsScreener:
     def __init__(self, api):
         self.api = api
-        self.last_scan_results = {'spreads':[],'directional':[],'scan_time':None}
+        self.last_scan_results = {'spreads':[],'scan_time':None}
 
     def full_scan(self, symbols=None):
         if symbols is None: symbols = config.WATCHLIST
@@ -31,7 +31,7 @@ class OptionsScreener:
         spread_opps.sort(key=lambda x: x.get('score',0), reverse=True)
         dir_opps.sort(key=lambda x: x.get('score',0), reverse=True)
         self.last_scan_results = {
-            'spreads': spread_opps[:20], 'directional': dir_opps[:20],
+            'spreads': spread_opps[:20],
             'scan_time': datetime.now().isoformat(), 'symbols_scanned': scanned,
             'errors': errors, 'total_spread_opps': len(spread_opps), 'total_dir_opps': len(dir_opps),
         }

@@ -6,7 +6,7 @@ class Protections:
     def __init__(self, api, state):
         self.api = api; self.state = state
 
-    def check_all(self, trade_type='directional'):
+    def check_all(self, trade_type='spread'):
         for c in [self._max_pos, self._cooldown, self._daily_loss, self._windows, self._max_daily,
                    self._eod_block, self._bp_reserve, self._loss_breaker, self._weekend, self._iv_filter,
                    self._sector_limit, self._no_dup, self._vol_ok, self._spread_ok, self._sl_active, self._max_contracts]:
@@ -19,8 +19,6 @@ class Protections:
             n = len([s for s in self.state['credit_spreads'] if s['status'] in ['open','pending']])
             if n >= config.CS_MAX_OPEN: return False, f"Max {config.CS_MAX_OPEN} spreads"
         else:
-            n = len([t for t in self.state['directional_trades'] if t['status'] in ['open','pending']])
-            if n >= config.DIR_MAX_OPEN: return False, f"Max {config.DIR_MAX_OPEN} directional"
         return True, ""
 
     def _cooldown(self, tt):
@@ -60,7 +58,6 @@ class Protections:
 
     def _bp_reserve(self, tt):
         used = sum((config.CS_SPREAD_WIDTH - s['credit']) * s.get('contracts',1) * 100 for s in self.state['credit_spreads'] if s['status'] in ['open','pending'])
-        used += sum(t['entry_price'] * t['current_qty'] * 100 for t in self.state['directional_trades'] if t['status'] in ['open','pending'])
         if config.VIRTUAL_ACCOUNT_SIZE - used < config.VIRTUAL_ACCOUNT_SIZE * 0.20: return False, "BP reserve"
         return True, ""
 
@@ -88,7 +85,6 @@ class Protections:
         for s in self.state.get('credit_spreads', []):
             if s['status'] in ['open', 'pending'] and s['symbol'] == symbol:
                 return False, f"Already have open spread on {symbol}"
-        for t in self.state.get('directional_trades', []):
             if t['status'] in ['open', 'pending'] and t['symbol'] == symbol:
                 return False, f"Already have open trade on {symbol}"
 
@@ -98,7 +94,6 @@ class Protections:
         for s in self.state.get('credit_spreads', []):
             if s['status'] in ['open', 'pending'] and config.SECTOR_MAP.get(s['symbol'], '') == sector:
                 count += 1
-        for t in self.state.get('directional_trades', []):
             if t['status'] in ['open', 'pending'] and config.SECTOR_MAP.get(t['symbol'], '') == sector:
                 count += 1
         if count >= config.MAX_SAME_SECTOR:

@@ -59,7 +59,6 @@ class RiskAnalyzer:
 
         # Position concentration risk
         open_spreads = [s for s in state.get('credit_spreads', []) if s['status'] in ['open', 'pending']]
-        open_dir = [t for t in state.get('directional_trades', []) if t['status'] in ['open', 'pending']]
         
         sectors = {}
         for s in open_spreads:

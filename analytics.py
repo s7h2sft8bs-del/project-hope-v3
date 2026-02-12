@@ -58,8 +58,7 @@ class Analytics:
         monthly = self._monthly()
 
         spread_trades = [t for t in self.trade_history if 'spread' in t.get('type', '')]
-        dir_trades = [t for t in self.trade_history if t.get('type') == 'directional']
-
+        
         setup_stats = {}
         for t in self.trade_history:
             st = t.get('setup_type', 'unknown')
@@ -96,7 +95,7 @@ class Analytics:
             'max_win_streak':mw,'max_loss_streak':ml,'current_streak':cur,'streak_type':ct,
             'monthly':monthly,'weekly':weekly,
             'spread_stats':self._ss(spread_trades,'Credit Spreads'),
-            'directional_stats':self._ss(dir_trades,'Directional'),
+            
             'setup_stats':setup_stats,
             'top_symbols':[{'symbol':s[0],**s[1]} for s in sorted_syms[:5]],
             'bottom_symbols':[{'symbol':s[0],**s[1]} for s in sorted_syms[-5:]],
@@ -196,7 +195,7 @@ class Analytics:
             'sharpe_ratio':0,'max_drawdown':0,'max_drawdown_pct':0,
             'max_win_streak':0,'max_loss_streak':0,'current_streak':0,'streak_type':'',
             'monthly':[],'weekly':[],'spread_stats':{'name':'Credit Spreads','trades':0,'win_rate':0,'pnl':0},
-            'directional_stats':{'name':'Directional','trades':0,'win_rate':0,'pnl':0},
+            
             'setup_stats':{},'top_symbols':[],'bottom_symbols':[],'equity_curve':[],'recent_trades':[],
             'first_trade_date':'','days_trading':0,
         }

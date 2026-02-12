@@ -37,14 +37,14 @@ def set_theme():
 @app.route('/api/close', methods=['POST'])
 def close_pos():
     d = request.json or {}
-    r = engine.position_manager.manual_close_position(d.get('trade_id'), d.get('trade_type','directional'))
+    r = engine.position_manager.manual_close_position(d.get('trade_id'), d.get('trade_type','spread'))
     engine.storage.save_state(engine.state)
     return jsonify({'success': r})
 
 @app.route('/api/override', methods=['POST'])
 def toggle_ovr():
     d = request.json or {}
-    r = engine.position_manager.toggle_manual_override(d.get('trade_id'), d.get('trade_type','directional'))
+    r = engine.position_manager.toggle_manual_override(d.get('trade_id'), d.get('trade_type','spread'))
     return jsonify({'manual_override': r})
 
 @app.route('/api/close-all', methods=['POST'])
@@ -52,8 +52,7 @@ def close_all():
     c = 0
     for s in engine.state['credit_spreads']:
         if s['status'] == 'open': engine.position_manager.manual_close_position(s['order_id'],'spread'); c += 1
-    for t in engine.state['directional_trades']:
-        if t['status'] == 'open': engine.position_manager.manual_close_position(t['order_id'],'directional'); c += 1
+
     engine.storage.save_state(engine.state)
     return jsonify({'closed': c})
 
@@ -124,7 +123,6 @@ def risk_data(): return jsonify(engine.risk.stress_test(engine.state))
 @app.route('/api/risk/correlations')
 def correlations():
     open_syms = [s['symbol'] for s in engine.state['credit_spreads'] if s['status'] in ['open','pending']]
-    open_syms += [t['symbol'] for t in engine.state['directional_trades'] if t['status'] in ['open','pending']]
     if not open_syms: open_syms = ['SPY','QQQ','AAPL','MSFT','NVDA']
     return jsonify(engine.risk.calculate_correlations(list(set(open_syms))))
 

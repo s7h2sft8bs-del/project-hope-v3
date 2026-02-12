@@ -163,7 +163,7 @@ class IVRankCalculator:
         else:
             # Directional: want moderate IV
             if rank > config.GREEKS_IV_RANK_MAX:
-                return False, f"{symbol} IV Rank {rank}% too high for directional"
+                return False, f"{symbol} IV Rank {rank}% too high"
             return True, f"IV Rank {rank}%"
 
     def get_top_iv_symbols(self, n=20):

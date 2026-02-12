@@ -13,7 +13,6 @@ class PositionManager:
 
     def check_all_positions(self):
         self._check_credit_spreads()
-        self._check_directional()
 
     def _check_credit_spreads(self):
         for s in self.state['credit_spreads']:
@@ -38,27 +37,6 @@ class PositionManager:
                 if dte <= config.CS_CLOSE_DTE: self._close_spread(s, f"DTE CUTOFF ({dte}d)"); continue
             except Exception as e: print(f"[PM ERR] {s['symbol']}: {e}")
 
-    def _check_directional(self):
-        for t in self.state['directional_trades']:
-            if t['status'] != 'open' or t.get('manual_override'): continue
-            try:
-                q = self.api.get_quote(t['option_symbol'])
-                if not q: continue
-                cp = q.get('last', 0) or round((q.get('bid',0) + q.get('ask',0)) / 2, 2)
-                if cp <= 0: continue
-                chg = round((cp - t['entry_price']) / t['entry_price'] * 100, 1)
-                t['current_price'] = cp; t['change_pct'] = chg
-                t['pnl'] = round((cp - t['entry_price']) * t['current_qty'] * 100, 2)
-                if chg <= -config.DIR_STOP_LOSS_PCT: self._close_dir(t, t['current_qty'], f"SL ({chg}%)"); continue
-                if chg >= config.DIR_TP3_PCT and t['tier_hit'] < 3: self._close_dir(t, t['current_qty'], f"T3 ({chg}%)"); t['tier_hit'] = 3; continue
-                if chg >= config.DIR_TP2_PCT and t['tier_hit'] < 2:
-                    qty = max(1, min(math.floor(t['original_qty'] * config.DIR_TP2_SELL_PCT / 100), t['current_qty']))
-                    self._partial(t, qty, f"T2 ({chg}%)"); t['tier_hit'] = 2; continue
-                if chg >= config.DIR_TP1_PCT and t['tier_hit'] < 1:
-                    qty = max(1, math.floor(t['current_qty'] * config.DIR_TP1_SELL_PCT / 100))
-                    self._partial(t, qty, f"T1 ({chg}%)"); t['tier_hit'] = 1; continue
-            except Exception as e: print(f"[PM ERR] {t['symbol']}: {e}")
-
     def _close_spread(self, s, reason):
         self.api.close_credit_spread(s['symbol'], s['short_symbol'], s['long_symbol'], s['contracts'], s.get('current_debit', s['credit']))
         pnl = s.get('current_profit', 0) * s['contracts'] * 100
@@ -72,7 +50,6 @@ class PositionManager:
         t['current_qty'] = 0; t['status'] = 'closed'; t['close_reason'] = reason; t['closed_at'] = datetime.now().isoformat()
         pnl = t.get('pnl', 0)
         self.alerts.send(f"CLOSED: {t['symbol']} {t['option_type'].upper()} | {reason} | ${pnl:.2f}")
-        self._track(pnl, t, 'directional')
         self._log(f"Dir {t['symbol']}: {reason} | ${pnl:.2f}")
 
     def _partial(self, t, qty, reason):
@@ -92,7 +69,6 @@ class PositionManager:
             self.analytics.record_trade({'symbol': trade['symbol'], 'type': ttype, 'pnl': pnl, 'direction': trade.get('direction', '')})
 
     def manual_close_position(self, trade_id, ttype):
-        trades = self.state['credit_spreads'] if ttype == 'spread' else self.state['directional_trades']
         for t in trades:
             if t.get('order_id') == trade_id and t['status'] == 'open':
                 if ttype == 'spread': self._close_spread(t, "MANUAL")
@@ -101,7 +77,6 @@ class PositionManager:
         return False
 
     def toggle_manual_override(self, trade_id, ttype):
-        trades = self.state['credit_spreads'] if ttype == 'spread' else self.state['directional_trades']
         for t in trades:
             if t.get('order_id') == trade_id:
                 t['manual_override'] = not t.get('manual_override', False)

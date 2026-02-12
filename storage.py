@@ -43,7 +43,6 @@ class Storage:
                 'saved_at': datetime.now().isoformat(),
                 'autopilot': state.get('autopilot', False),
                 'credit_spreads': state.get('credit_spreads', []),
-                'directional_trades': state.get('directional_trades', []),
                 'wins': state.get('wins', 0),
                 'losses': state.get('losses', 0),
                 'consecutive_losses': state.get('consecutive_losses', 0),
