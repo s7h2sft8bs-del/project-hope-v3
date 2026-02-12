@@ -18,7 +18,6 @@ class Protections:
         if tt == 'spread':
             n = len([s for s in self.state['credit_spreads'] if s['status'] in ['open','pending']])
             if n >= config.CS_MAX_OPEN: return False, f"Max {config.CS_MAX_OPEN} spreads"
-        else:
         return True, ""
 
     def _cooldown(self, tt):
