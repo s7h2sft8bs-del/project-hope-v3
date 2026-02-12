@@ -210,9 +210,9 @@ class TradingEngine:
                 if today != self.state['today']:
                     self.storage.update_daily_summary(
                         self.state['today'],
-                        self.state['cs_trades_today'] + self.state['dir_trades_today'],
+                        self.state['cs_trades_today'],
                         self.state['wins'], self.state['losses'], self.state['daily_pnl'])
-                    self.state.update({'today':today,'cs_trades_today':0,'dir_trades_today':0,
+                    self.state.update({'today':today,'cs_trades_today':0,
                                        'daily_pnl':0,'consecutive_losses':0})
                     self.state.pop('eod_closed_today', None)
                     self._log('system', f'New day: {today}')
@@ -361,7 +361,7 @@ class TradingEngine:
             'credit_spreads':os_,
             'spread_opportunities':self.state.get('spread_opportunities',[]),
                         'activity_log':self.state['activity_log'][:50],
-            'cs_trades_today':self.state['cs_trades_today'],'dir_trades_today':self.state['dir_trades_today'],
+            'cs_trades_today':self.state['cs_trades_today'],
             'consecutive_losses':self.state.get('consecutive_losses',0),
             'portfolio_greeks':self.state.get('portfolio_greeks',{}),
             'screener_results':self.state.get('screener_results',{}),

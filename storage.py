@@ -49,7 +49,6 @@ class Storage:
                 'total_pnl': state.get('total_pnl', 0),
                 'daily_pnl': state.get('daily_pnl', 0),
                 'cs_trades_today': state.get('cs_trades_today', 0),
-                'dir_trades_today': state.get('dir_trades_today', 0),
                 'today': state.get('today', ''),
             }
             self._write(STATE_FILE, data)
