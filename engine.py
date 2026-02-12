@@ -224,13 +224,51 @@ class TradingEngine:
         try:
             orders = self.api.get_orders()
             if not orders: return
-            om = {str(o.get('id','')): o.get('status','') for o in orders}
+            # Build map: order_id -> full order object
+            order_map = {}
+            for o in orders:
+                order_map[str(o.get('id', ''))] = o
             for s in self.state['credit_spreads']:
-                oid = str(s.get('order_id',''))
-                if oid in om:
-                    if om[oid]=='filled' and s['status']=='pending': s['status']='open'
-                    elif om[oid] in ['rejected','canceled']: s['status']='rejected'
-        except: pass
+                oid = str(s.get('order_id', ''))
+                if oid not in order_map: continue
+                order = order_map[oid]
+                status = order.get('status', '')
+                if status == 'filled' and s['status'] == 'pending':
+                    s['status'] = 'open'
+                    # Get actual fill price from Tradier
+                    fill_credit = self._get_fill_credit(order)
+                    if fill_credit and fill_credit > 0:
+                        s['quoted_credit'] = s['credit']  # Save original quote
+                        s['credit'] = fill_credit  # Use actual fill
+                        s['take_profit_price'] = round(fill_credit * (config.CS_TAKE_PROFIT_PCT / 100), 2)
+                        s['stop_loss_price'] = round(fill_credit * (config.CS_STOP_LOSS_PCT / 100), 2)
+                        self._log('system', f"FILL: {s['symbol']} credit ${fill_credit} (quoted ${s['quoted_credit']})")
+                elif status in ['rejected', 'canceled']:
+                    s['status'] = 'rejected'
+        except Exception as e: print(f"[SYNC ERR] {e}")
+
+    def _get_fill_credit(self, order):
+        """Extract actual fill credit from Tradier order legs"""
+        try:
+            leg = order.get('leg')
+            if not leg: return None
+            legs = leg if isinstance(leg, list) else [leg]
+            if len(legs) >= 2:
+                # Credit spread: short leg fill - long leg fill
+                fills = []
+                for l in legs:
+                    avg = l.get('avg_fill_price', 0)
+                    side = l.get('side', '')
+                    fills.append({'price': float(avg), 'side': side})
+                short_fill = next((f['price'] for f in fills if f['side'] in ('sell_to_open', 'sell')), 0)
+                long_fill = next((f['price'] for f in fills if f['side'] in ('buy_to_open', 'buy')), 0)
+                if short_fill > 0:
+                    return round(short_fill - long_fill, 2)
+            # Single leg or fallback
+            avg = order.get('avg_fill_price', 0)
+            if avg: return round(float(avg), 2)
+            return None
+        except: return None
 
     def _auto_journal_closed(self):
         """Auto-create journal entries for newly closed trades"""
