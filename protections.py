@@ -24,7 +24,7 @@ class Protections:
         lt = self.state.get('last_trade_time')
         if lt:
             elapsed = (datetime.now() - lt).total_seconds()
-            if elapsed < config.DIR_COOLDOWN_SECONDS: return False, f"Cooldown: {int(config.DIR_COOLDOWN_SECONDS - elapsed)}s"
+            if elapsed < 120: return False, f"Cooldown: {int(120 - elapsed)}s"
         return True, ""
 
     def _daily_loss(self, tt):
@@ -45,7 +45,6 @@ class Protections:
 
     def _max_daily(self, tt):
         if tt == 'spread' and self.state['cs_trades_today'] >= config.CS_MAX_NEW_PER_DAY: return False, "Max spreads/day"
-        if tt != 'spread' and self.state['dir_trades_today'] >= config.DIR_MAX_NEW_PER_DAY: return False, "Max dir/day"
         return True, ""
 
     def _eod_block(self, tt):
