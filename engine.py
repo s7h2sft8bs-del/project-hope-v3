@@ -198,7 +198,7 @@ class TradingEngine:
                 except: now = datetime.now()
                 mins = now.hour*60+now.minute; wd = now.weekday()
                 self.state['market_open'] = wd<5 and 570<=mins<=960
-                self.state['in_window'] = (570<=mins<=630) or (900<=mins<=955)
+                self.state['in_window'] = (585<=mins<=955)  # 9:45 AM - 3:55 PM (skip first 15 min, spreads widen at open)
                 if wd<5 and mins>=955: self._eod_close()
             except: pass
             time.sleep(1)
