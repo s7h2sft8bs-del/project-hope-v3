@@ -37,10 +37,7 @@ class Protections:
         except: now = datetime.now()
         if now.weekday() > 4: return False, "Weekend"
         m = now.hour * 60 + now.minute
-        if tt == 'spread':
-            if not (585 <= m <= 630): return False, "Outside spread window"
-        else:
-            if not ((570 <= m <= 630) or (900 <= m <= 955)): return False, "Outside windows"
+        if not (585 <= m <= 955): return False, "Outside trading window (9:45 AM - 3:55 PM)"
         return True, ""
 
     def _max_daily(self, tt):
@@ -83,8 +80,6 @@ class Protections:
         for s in self.state.get('credit_spreads', []):
             if s['status'] in ['open', 'pending'] and s['symbol'] == symbol:
                 return False, f"Already have open spread on {symbol}"
-            if t['status'] in ['open', 'pending'] and t['symbol'] == symbol:
-                return False, f"Already have open trade on {symbol}"
 
         # Sector concentration check
         sector = config.SECTOR_MAP.get(symbol, 'Other')
@@ -92,8 +87,7 @@ class Protections:
         for s in self.state.get('credit_spreads', []):
             if s['status'] in ['open', 'pending'] and config.SECTOR_MAP.get(s['symbol'], '') == sector:
                 count += 1
-            if t['status'] in ['open', 'pending'] and config.SECTOR_MAP.get(t['symbol'], '') == sector:
-                count += 1
+
         if count >= config.MAX_SAME_SECTOR:
             return False, f"Max {config.MAX_SAME_SECTOR} in {sector}"
         return True, ""
