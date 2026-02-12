@@ -344,7 +344,7 @@ class TradingEngine:
         w=self.state['wins'];l=self.state['losses']
         wr=round((w/(w+l))*100,1) if (w+l)>0 else 0
         used=sum((config.CS_SPREAD_WIDTH-s['credit'])*s['contracts']*100 for s in os_)
-        used+=sum(t['entry_price']*t['current_qty']*100 for t in od)
+        # directional removed
         
         # Sector heatmap (cached, only refresh occasionally)
         heatmap = []
@@ -357,7 +357,7 @@ class TradingEngine:
             'vix':self.state['vix'],'account_value':round(vv,2),
             'buying_power':round(config.VIRTUAL_ACCOUNT_SIZE-used,2),
             'daily_pnl':self.state['daily_pnl'],'total_pnl':self.state['total_pnl'],
-            'open_positions':len(os_)+len(od),'win_rate':wr,'wins':w,'losses':l,
+            'open_positions':len(os_),'win_rate':wr,'wins':w,'losses':l,
             'credit_spreads':os_,
             'spread_opportunities':self.state.get('spread_opportunities',[]),
                         'activity_log':self.state['activity_log'][:50],
