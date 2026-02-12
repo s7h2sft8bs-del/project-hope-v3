@@ -36,16 +36,38 @@ class CreditSpreadScanner:
                 chain = self.api.get_option_chain(symbol, exp_date)
                 if not chain: continue
 
-                put = self._find_put_spread(symbol, chain, price, exp_date, dte)
-                if put: opportunities.append(put)
+                # Trend filter: sell puts in bullish/neutral, sell calls in bearish/neutral
+                trend = self._check_trend(symbol)
 
-                call = self._find_call_spread(symbol, chain, price, exp_date, dte)
-                if call: opportunities.append(call)
+                if trend in ('bullish', 'neutral'):
+                    put = self._find_put_spread(symbol, chain, price, exp_date, dte)
+                    if put:
+                        put['trend'] = trend
+                        opportunities.append(put)
+
+                if trend in ('bearish', 'neutral'):
+                    call = self._find_call_spread(symbol, chain, price, exp_date, dte)
+                    if call:
+                        call['trend'] = trend
+                        opportunities.append(call)
             except Exception as e:
                 continue
 
         opportunities.sort(key=lambda x: x['credit'], reverse=True)
         return opportunities
+
+    def _check_trend(self, symbol):
+        """5-day vs 20-day SMA trend filter"""
+        try:
+            h = self.api.get_history(symbol, days=30)
+            if not h or len(h) < 20: return 'neutral'
+            closes = [d.get('close', 0) for d in h[-20:]]
+            sma5 = sum(closes[-5:]) / 5
+            sma20 = sum(closes) / 20
+            if sma5 > sma20: return 'bullish'
+            if sma5 < sma20: return 'bearish'
+            return 'neutral'
+        except: return 'neutral'
 
     def _find_put_spread(self, symbol, chain, price, exp, dte):
         puts = sorted([o for o in chain if o.get('option_type') == 'put'], key=lambda x: x.get('strike', 0), reverse=True)
@@ -98,27 +120,3 @@ class CreditSpreadScanner:
             self.state['cs_trades_today'] += 1
             return rec
         return None
-
-def check_trend(api, symbol):
-    try:
-        h = api.get_history(symbol, days=30)
-        if not h or len(h) < 20: return "neutral"
-        c = [d.get("close",0) for d in h[-20:]]
-        s5 = sum(c[-5:])/5
-        s20 = sum(c)/20
-        if s5 > s20: return "bullish"
-        if s5 < s20: return "bearish"
-        return "neutral"
-    except: return "neutral"
-
-def check_trend(api, symbol):
-    try:
-        h = api.get_history(symbol, days=30)
-        if not h or len(h) < 20: return "neutral"
-        c = [d.get("close",0) for d in h[-20:]]
-        s5 = sum(c[-5:])/5
-        s20 = sum(c)/20
-        if s5 > s20: return "bullish"
-        if s5 < s20: return "bearish"
-        return "neutral"
-    except: return "neutral"
